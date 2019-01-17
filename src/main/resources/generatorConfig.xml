@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE generatorConfiguration PUBLIC
+        "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+        "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+<generatorConfiguration>
+    <context id="DB2Tables" targetRuntime="MyBatis3">
+        <commentGenerator>
+            <property name="suppressAllComments" value="true"/>
+        </commentGenerator>
+
+        <!--配置数据库连接-->
+        <jdbcConnection driverClass="com.mysql.jdbc.Driver"
+                        connectionURL="jdbc:mysql://localhost:3306/cardtest?useUnicode=true&amp;characterEncoding=utf8&amp;useSSL=false"
+                        userId="root"
+                        password="root" >
+            <!--设置可以获取tables remarks信息 解决主键不识别-->
+            <property name="useInformationSchema" value="true"/>
+            <property name="remarks" value="true"/>
+
+        </jdbcConnection>
+
+
+        <javaTypeResolver >
+            <property name="forceBigDecimals" value="false" />
+        </javaTypeResolver>
+
+        <!--指定javabean生成位置-->
+        <javaModelGenerator targetPackage="com.bupt.cardtest.model.bean" targetProject="./src/main/java">
+            <property name="enableSubPackages" value="true" />
+            <property name="trimStrings" value="true" />
+        </javaModelGenerator>
+
+
+        <!--sql映射文件生成的位置-->
+        <sqlMapGenerator targetPackage="mapper"  targetProject="./src/main/resources">
+            <property name="enableSubPackages" value="true" />
+        </sqlMapGenerator>
+
+        <!--指定DAO接口生成的位置-->
+        <javaClientGenerator type="XMLMAPPER" targetPackage="com.bupt.cardtest.dao"  targetProject="./src/main/java">
+            <property name="enableSubPackages" value="true" />
+        </javaClientGenerator>
+
+        <!--指定每个表的生成策略-->
+        <table tableName="admin" domainObjectName="Admin"></table>
+        <table tableName="admin_device" domainObjectName="AdminDevice"></table>
+        <table tableName="device" domainObjectName="Device"></table>
+        <table tableName="upfile" domainObjectName="Upfile"></table>
+        <table tableName="record" domainObjectName="Record"></table>
+        <table tableName="t_admin_role" domainObjectName="AdminRole"></table>
+        <table tableName="t_resource" domainObjectName="Resource"></table>
+        <table tableName="t_resource_type" domainObjectName="ResourceType"></table>
+        <table tableName="t_role" domainObjectName="Role"></table>
+        <table tableName="t_role_resource" domainObjectName="RoleResource"></table>
+        <table tableName="t_system_config" domainObjectName="SystemConfig"></table>
+
+
+
+
+    </context>
+</generatorConfiguration>

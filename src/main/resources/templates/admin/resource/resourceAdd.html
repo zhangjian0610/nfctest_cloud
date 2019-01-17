@@ -1,0 +1,226 @@
+<style>
+.ztreepanel {
+	position: absolute;
+	overflow: auto;
+	z-index: 1000;
+	float: left;
+	padding: 5px 0px 0px 10px margin: 2px 0 0;
+	font-size: 14px;
+	text-align: left;
+	list-style: none;
+	background-color: #fff;
+	-webkit-background-clip: padding-box;
+	background-clip: padding-box;
+	border: 1px solid #ccc;
+	border: 1px solid rgba(0, 0, 0, .15);
+	border-radius: 4px;
+	-webkit-box-shadow: 0 6px 12px rgba(0, 0, 0, .175);
+	box-shadow: 0 6px 12px rgba(0, 0, 0, .175);
+}
+
+.ztree li {
+	margin: 0;
+	list-style: none;
+	line-height: 14px;
+	text-align: left;
+	white-space: nowrap;
+	outline: 0
+}
+
+.ztree li a {
+	width: 90%;
+	height: 30px !important;
+	line-height: 30px;
+	text-decoration: none
+}
+
+.ztree li a:hover {
+	text-decoration: none;
+	font-weight: bold;
+	font-size: 16px;
+}
+
+.ztree li a.curSelectedNode {
+	height: 28px;
+	line-height: 28px;
+}
+
+.ztree li span.button.switch {
+	line-height: 28px;
+	height: 28px;
+}
+
+.ztree li span.button.noline_close {
+	background: none;
+}
+
+.ztree li span.button.noline_open {
+	background: none;
+}
+
+.ztree li span {
+	font-size: 15px;
+}
+</style>
+<script type="text/javascript">
+	$("#formresourceAdd").validate(
+    {
+	    submitHandler : function(form)
+	    {
+		    parent.BootstrapDialog.dialog.enableButtons(false);
+		    $('#formresourceAdd').ajaxSubmit(
+		    {
+		        url : getRootPath_web() + '/resourceController/add',
+		        success : function(data)
+		        {
+			        if (data.success)
+			        {
+				        parent.BootstrapDialog.dialog.close();
+				        parent.BootstrapDialog.table.bootstrapTable('refresh');
+				        swal('', data.msg, 'success')
+			        }
+			        else
+			        {
+				        parent.BootstrapDialog.dialog.close();
+				        parent.BootstrapDialog.table.bootstrapTable('refresh');
+				        swal('', data.msg, 'error')
+			        }
+		        },
+		    });
+	    }
+    });
+    var setting =
+    {
+        async :
+        {
+            enable : true,
+            url : getRootPath_web() + '/resourceController/allTree',
+            type : 'get',
+        },
+
+        view :
+        {
+            dblClickExpand : false,
+            showIcon : false,
+            showLine : false,
+
+        },
+        data :
+        {
+            simpleData :
+            {
+                enable : true,
+                idKey : "id", // id编号命名     
+                pIdKey : "pid", // 父id编号命名      
+                rootId : 0
+            },
+            key :
+            {
+                url : 'xxx',
+                name : 'text'
+            }
+        },
+        callback :
+        {
+            onClick : onClick,
+            onAsyncSuccess : asyncSuccess,
+        }
+
+    };
+    function asyncSuccess()
+    {
+	    var zTree = $.fn.zTree.getZTreeObj("treeDemo");
+	    zTree.expandAll(true);
+    }
+
+    function onClick(e, treeId, treeNode)
+    {
+	    var zTree = $.fn.zTree.getZTreeObj("treeDemo");
+	    $("#citySel").html(treeNode.text)
+	    $("#pid").val(treeNode.id);
+	    $("#menuContent").fadeOut("fast");
+	    var nodes = zTree.getSelectedNodes();
+	    if (nodes.length > 0)
+	    {
+		    zTree.cancelSelectedNode(nodes[0]);
+	    }
+    }
+    function showMenu()
+    {
+	    var cityObj = $("#citySel");
+	    var cityOffset = $("#btn").offset();
+	    var width1 = $("#btn").outerWidth(true);
+	    $("#menuContent").css(
+	    {
+		    minWidth : width1,
+	    }).show();
+	    $("body").bind("mousedown", onBodyDown);
+    }
+
+    function hideMenu()
+    {
+	    $("#menuContent").fadeOut("fast");
+	    $("body").unbind("mousedown", onBodyDown);
+    }
+
+    function onBodyDown(event)
+    {
+	    if (!(event.target.id == "btn" || event.target.id == "menuContent" || $(event.target).parents("#menuContent").length > 0))
+	    {
+		    hideMenu();
+	    }
+    }
+    $.fn.zTree.init($("#treeDemo"), setting);
+</script>
+
+
+
+<form class="form-horizontal" id="formresourceAdd" method="post" action="#">
+	<div class="form-group">
+		<label class="col-md-3 control-label">资源名称</label>
+		<div class="col-md-8">
+			<input name="name" type="text" placeholder="请输入资源名称" class="form-control" maxlength="18" value="" required="required" />
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-md-3 control-label">资源类型</label>
+		<div class="col-md-8">
+			<select name="tresourcetypeId" class="form-control">
+				<option th:each="prod : ${resourceTypeList}" th:value="${prod.id}" th:text="${prod.name}"></option>
+			</select>
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-md-3 control-label">资源路径</label>
+		<div class="col-md-8">
+			<input name="url" type="text" placeholder="请输入资源路径" class="form-control " maxlength="100" value="" />
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-md-3 control-label">排序</label>
+		<div class="col-md-8">
+			<input name="seq" type="text" placeholder="请输入1-100整数" class="form-control" maxlength="3" required="required" />
+
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-md-3 control-label">上级资源</label>
+		<div class="col-md-8">
+			<button id="btn" type="button" class="btn dropdown-toggle bs-placeholder btn-default" style="width: 368px" onclick="showMenu();">
+				<span id="citySel" class="filter-option pull-left">没有选中任何项</span> <span class="bs-caret pull-right"> <span class="caret"></span>
+				</span> <input type="text" style="display: none;" id="pid" name="pid" />
+			</button>
+			<div id="menuContent" class="ztreepanel" style="height: 240px; display: none;">
+				<ul id="treeDemo" class="ztree" style="margin-top: 0; padding-left: 5px; padding-top: 0px;"></ul>
+			</div>
+
+
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-md-3 control-label" onclick="getsu();">备注</label>
+		<div class="col-md-8">
+			<textarea name="remark" class="form-control" style="height: 90px" rows="" cols="" maxlength="90"></textarea>
+		</div>
+	</div>
+</form>

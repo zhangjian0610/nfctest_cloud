@@ -1,0 +1,351 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bupt.cardtest.dao.AdminMapper">
+  <resultMap id="BaseResultMap" type="com.bupt.cardtest.model.bean.Admin">
+    <id column="ID" jdbcType="VARCHAR" property="id" />
+    <result column="NAME" jdbcType="VARCHAR" property="name" />
+    <result column="PWD" jdbcType="VARCHAR" property="pwd" />
+    <result column="CREATEDATETIME" jdbcType="TIMESTAMP" property="createdatetime" />
+    <result column="LOCK_SYMBOL" jdbcType="INTEGER" property="lockSymbol" />
+    <result column="REMAINING_LOGINS" jdbcType="INTEGER" property="remainingLogins" />
+    <result column="EMAIL" jdbcType="VARCHAR" property="email" />
+    <result column="MODIFYDATETIME" jdbcType="TIMESTAMP" property="modifydatetime" />
+    <result column="VALIDDATETIME" jdbcType="DATE" property="validdatetime" />
+    <result column="LEVEL_TYPE" jdbcType="INTEGER" property="levelType" />
+    <result column="PHONE" jdbcType="VARCHAR" property="phone" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    ID, NAME, PWD, CREATEDATETIME, LOCK_SYMBOL, REMAINING_LOGINS, EMAIL, MODIFYDATETIME, 
+    VALIDDATETIME, LEVEL_TYPE, PHONE
+  </sql>
+  <select id="selectByExample" parameterType="com.bupt.cardtest.model.bean.AdminExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from admin
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from admin
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from admin
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.bupt.cardtest.model.bean.AdminExample">
+    delete from admin
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.bupt.cardtest.model.bean.Admin">
+    insert into admin (ID, NAME, PWD, 
+      CREATEDATETIME, LOCK_SYMBOL, REMAINING_LOGINS, 
+      EMAIL, MODIFYDATETIME, VALIDDATETIME, 
+      LEVEL_TYPE, PHONE)
+    values (#{id,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{pwd,jdbcType=VARCHAR}, 
+      #{createdatetime,jdbcType=TIMESTAMP}, #{lockSymbol,jdbcType=INTEGER}, #{remainingLogins,jdbcType=INTEGER}, 
+      #{email,jdbcType=VARCHAR}, #{modifydatetime,jdbcType=TIMESTAMP}, #{validdatetime,jdbcType=DATE}, 
+      #{levelType,jdbcType=INTEGER}, #{phone,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.bupt.cardtest.model.bean.Admin">
+    insert into admin
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        ID,
+      </if>
+      <if test="name != null">
+        NAME,
+      </if>
+      <if test="pwd != null">
+        PWD,
+      </if>
+      <if test="createdatetime != null">
+        CREATEDATETIME,
+      </if>
+      <if test="lockSymbol != null">
+        LOCK_SYMBOL,
+      </if>
+      <if test="remainingLogins != null">
+        REMAINING_LOGINS,
+      </if>
+      <if test="email != null">
+        EMAIL,
+      </if>
+      <if test="modifydatetime != null">
+        MODIFYDATETIME,
+      </if>
+      <if test="validdatetime != null">
+        VALIDDATETIME,
+      </if>
+      <if test="levelType != null">
+        LEVEL_TYPE,
+      </if>
+      <if test="phone != null">
+        PHONE,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="pwd != null">
+        #{pwd,jdbcType=VARCHAR},
+      </if>
+      <if test="createdatetime != null">
+        #{createdatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lockSymbol != null">
+        #{lockSymbol,jdbcType=INTEGER},
+      </if>
+      <if test="remainingLogins != null">
+        #{remainingLogins,jdbcType=INTEGER},
+      </if>
+      <if test="email != null">
+        #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="modifydatetime != null">
+        #{modifydatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="validdatetime != null">
+        #{validdatetime,jdbcType=DATE},
+      </if>
+      <if test="levelType != null">
+        #{levelType,jdbcType=INTEGER},
+      </if>
+      <if test="phone != null">
+        #{phone,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.bupt.cardtest.model.bean.AdminExample" resultType="java.lang.Long">
+    select count(*) from admin
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update admin
+    <set>
+      <if test="record.id != null">
+        ID = #{record.id,jdbcType=VARCHAR},
+      </if>
+      <if test="record.name != null">
+        NAME = #{record.name,jdbcType=VARCHAR},
+      </if>
+      <if test="record.pwd != null">
+        PWD = #{record.pwd,jdbcType=VARCHAR},
+      </if>
+      <if test="record.createdatetime != null">
+        CREATEDATETIME = #{record.createdatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.lockSymbol != null">
+        LOCK_SYMBOL = #{record.lockSymbol,jdbcType=INTEGER},
+      </if>
+      <if test="record.remainingLogins != null">
+        REMAINING_LOGINS = #{record.remainingLogins,jdbcType=INTEGER},
+      </if>
+      <if test="record.email != null">
+        EMAIL = #{record.email,jdbcType=VARCHAR},
+      </if>
+      <if test="record.modifydatetime != null">
+        MODIFYDATETIME = #{record.modifydatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.validdatetime != null">
+        VALIDDATETIME = #{record.validdatetime,jdbcType=DATE},
+      </if>
+      <if test="record.levelType != null">
+        LEVEL_TYPE = #{record.levelType,jdbcType=INTEGER},
+      </if>
+      <if test="record.phone != null">
+        PHONE = #{record.phone,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update admin
+    set ID = #{record.id,jdbcType=VARCHAR},
+      NAME = #{record.name,jdbcType=VARCHAR},
+      PWD = #{record.pwd,jdbcType=VARCHAR},
+      CREATEDATETIME = #{record.createdatetime,jdbcType=TIMESTAMP},
+      LOCK_SYMBOL = #{record.lockSymbol,jdbcType=INTEGER},
+      REMAINING_LOGINS = #{record.remainingLogins,jdbcType=INTEGER},
+      EMAIL = #{record.email,jdbcType=VARCHAR},
+      MODIFYDATETIME = #{record.modifydatetime,jdbcType=TIMESTAMP},
+      VALIDDATETIME = #{record.validdatetime,jdbcType=DATE},
+      LEVEL_TYPE = #{record.levelType,jdbcType=INTEGER},
+      PHONE = #{record.phone,jdbcType=VARCHAR}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.bupt.cardtest.model.bean.Admin">
+    update admin
+    <set>
+      <if test="name != null">
+        NAME = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="pwd != null">
+        PWD = #{pwd,jdbcType=VARCHAR},
+      </if>
+      <if test="createdatetime != null">
+        CREATEDATETIME = #{createdatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lockSymbol != null">
+        LOCK_SYMBOL = #{lockSymbol,jdbcType=INTEGER},
+      </if>
+      <if test="remainingLogins != null">
+        REMAINING_LOGINS = #{remainingLogins,jdbcType=INTEGER},
+      </if>
+      <if test="email != null">
+        EMAIL = #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="modifydatetime != null">
+        MODIFYDATETIME = #{modifydatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="validdatetime != null">
+        VALIDDATETIME = #{validdatetime,jdbcType=DATE},
+      </if>
+      <if test="levelType != null">
+        LEVEL_TYPE = #{levelType,jdbcType=INTEGER},
+      </if>
+      <if test="phone != null">
+        PHONE = #{phone,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.bupt.cardtest.model.bean.Admin">
+    update admin
+    set NAME = #{name,jdbcType=VARCHAR},
+      PWD = #{pwd,jdbcType=VARCHAR},
+      CREATEDATETIME = #{createdatetime,jdbcType=TIMESTAMP},
+      LOCK_SYMBOL = #{lockSymbol,jdbcType=INTEGER},
+      REMAINING_LOGINS = #{remainingLogins,jdbcType=INTEGER},
+      EMAIL = #{email,jdbcType=VARCHAR},
+      MODIFYDATETIME = #{modifydatetime,jdbcType=TIMESTAMP},
+      VALIDDATETIME = #{validdatetime,jdbcType=DATE},
+      LEVEL_TYPE = #{levelType,jdbcType=INTEGER},
+      PHONE = #{phone,jdbcType=VARCHAR}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+
+
+
+  <select id="dataGrid" parameterType="com.bupt.cardtest.model.pagebean.AdminPage"
+          resultType="com.bupt.cardtest.model.pagebean.AdminPage">
+    SELECT
+    a.ID as id,a.PHONE as
+    phone,a.NAME as name,a.PWD as pwd,
+    a.CREATEDATETIME as createdatetime,a.LOCK_SYMBOL as
+    lockSymbol,a.REMAINING_LOGINS as remainingLogins,a.EMAIL as email,
+    a.MODIFYDATETIME as modifydatetime,a.VALIDDATETIME as
+    validdatetime,a.LEVEL_TYPE as
+    levelType
+    FROM
+    admin a
+
+    where 1=1
+    <if test="name!=null and name!=''">
+      and a.name LIKE CONCAT('%',#{name},'%')
+    </if>
+    <if test="modifydatetimeStart!=null">
+      and a.MODIFYDATETIME >= #{modifydatetimeStart}
+    </if>
+
+    order by a.ID ASC
+  </select>
+
+  <select id="dataGridCount" parameterType="com.bupt.cardtest.model.pagebean.AdminPage"
+          resultType="java.lang.Long">
+    SELECT
+    count(*)
+    FROM
+    admin a
+    where 1=1
+    <if test="name!=null and name!=''">
+      and a.name LIKE CONCAT('%',#{name},'%')
+    </if>
+    <if test="modifydatetimeStart!=null">
+      and a.MODIFYDATETIME >= #{modifydatetimeStart}
+    </if>
+    order by a.ID ASC
+  </select>
+
+
+
+</mapper>

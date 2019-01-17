@@ -1,0 +1,133 @@
+<style>
+.file {
+	position: relative;
+	display: inline-block;
+	background: #D0EEFF;
+	border: 1px solid #99D3F5;
+	border-radius: 4px;
+	padding: 4px 12px;
+	overflow: hidden;
+	color: #1E88C7;
+	text-decoration: none;
+	text-indent: 0;
+	line-height: 20px;
+}
+
+.file input {
+	position: absolute;
+	font-size: 100px;
+	right: 0;
+	top: 0;
+	opacity: 0;
+}
+
+.file:hover {
+	background: #AADFFD;
+	border-color: #78C3F3;
+	color: #004974;
+	text-decoration: none;
+}
+</style>
+
+<form class="form-horizontal" id="form" method="post">
+	<div class="form-group">
+		<div class="col-md-12">
+			<div>
+				<h4 style="text-align: center; margin-top: 2px;">保险说明</h4>
+				<div style="margin-left: 35px;">
+					  <span>1. 险种名称：短期意外伤害保险</span>
+					<br /> <span>2. 保险价格：5元/人/天</span> <br /> <span>3.
+						如有购买意向，请至少在本赛区比赛正式开始前5个工作日提交购买申请，系统会自动导出“审核通过”的运动员信息至平台工作人员处，因此请您确保及时审核</span>
+					<br /> <span>4. 具体保险内容及细则工作人员线下发送</span>
+				</div>
+
+
+
+			</div>
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-md-3 control-label"></label>
+		<div class="col-md-8">
+			<input name="isdu" type="checkbox" autocomplete="off"
+				style="margin-top: 12px;" required="required" id="isdu"
+				onclick="isChecked(this);" /> 审核通过人数：<span id="counts">**</span>
+		</div>
+		<script type="text/javascript">
+			function isChecked() {
+				if ($("#isdu").is(':checked')) {
+					$("#isc").show();
+					$
+							.ajax(
+									{
+										url : getRootPath_web()
+												+ '/regiStrationController/toEmailCount',
+										data : $("#foremail").serialize(),
+										type : "post",
+									}).done(function(data) {
+								if (data.success) {
+									$("#counts").text(data.obj);
+								} else {
+									$("#counts").text(0);
+								}
+
+							}).error(function(data) {
+								parent.swal("操作失败!", data.msg, "error");
+							});
+				} else {
+					$("#isc").hide();
+					$("#counts").text("**");
+
+				}
+			}
+		</script>
+	</div>
+	<div style="display: none" id="isc">
+		<div class="form-group">
+			<label class="col-md-3 control-label">保险购买负责人</label>
+			<div class="col-md-8">
+				<input name="userNames" type="text" class="form-control"
+					autocomplete="off" required="required" id="userNames"
+					maxlength="10" />
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-md-3 control-label">负责人联系方式</label>
+			<div class="col-md-8">
+				<input name="userNamesPhone" type="text" class="form-control"
+					autocomplete="off" required="required" id="userNamesPhone"
+					isTelephone="true" />
+			</div>
+		</div>
+
+	</div>
+
+</form>
+<script>
+	$("#form").validate({
+		submitHandler : function(form) {
+			parent.BootstrapDialog.dialog.enableButtons(false);
+			$.ajax({
+				url : getRootPath_web() + '/regiStrationController/toEmail',
+				data : {
+					'userNames' : $("#userNames").val(),
+					'userNamesPhone' : $("#userNamesPhone").val(),
+				},
+				type : "post",
+			}).done(function(data) {
+				if (data.success) {
+
+					parent.swal("操作成功!", data.msg, "success");
+					parent.BootstrapDialog.dialog.close();
+				} else {
+					parent.BootstrapDialog.dialog.enableButtons(true);
+					parent.swal("操作失败!", data.msg, "error");
+				}
+
+			}).error(function(data) {
+				parent.BootstrapDialog.dialog.enableButtons(true);
+				parent.swal("操作失败!", data.msg, "error");
+			});
+		}
+	});
+</script>

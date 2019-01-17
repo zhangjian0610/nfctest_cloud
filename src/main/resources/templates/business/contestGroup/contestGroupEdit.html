@@ -1,0 +1,141 @@
+<form class="form-horizontal" id="form" method="post">
+	<div class="form-group">
+		<label class="col-md-3 control-label">小组标识</label>
+		<div class="col-md-8">
+			<input name="groupId" type="hidden" placeholder="请输入小组标识" class="form-control" th:value="${contestGroup.groupId}" autocomplete="off" required="required" />
+			<label class="control-label" th:text="${contestGroup.groupId}"></label>
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-md-3 control-label">小组名称</label>
+		<div class="col-md-8">
+			<input name="groupName" type="text" placeholder="请输入小组名称" class="form-control" th:value="${contestGroup.groupName}" autocomplete="off" required="required" />
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-md-3 control-label">所属项目</label>
+		<div class="col-md-8">
+			<select class="form-control"
+				name="contestId">
+				<option th:each="contest:${contestList}" th:selected="${contestGroup.contestId==contest.contestId}" th:value="${contest.contestId}" th:text="${contest.contestName}">
+				</option>
+			</select>
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-md-3 control-label">小组类型</label>
+		<div class="col-md-8">
+			<select class="form-control" isNumber="true" name="groupType">
+				<option value="1" th:selected="${contestGroup.groupType==1}">单打</option>
+				<option value="2" th:selected="${contestGroup.groupType==2}">混双open组</option>
+			</select>
+		</div>
+	</div>
+
+	<div class="form-group">
+		<label class="col-md-3 control-label">出生年份上限</label>
+		<div class="col-md-8">
+			<input id="groupLifeUpperLimit" type="text" class="form-control datepicker"  th:value="${contestGroup.groupLifeUpperLimit}"  placeholder="出生年份上限" readonly="readonly" name="groupLifeUpperLimit" onchange="changeValue()" />
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-md-3 control-label">出生年份下限</label>
+		<div class="col-md-8">
+			<input id="groupLifeLowerLimit" type="text" class="form-control datepicker"  th:value="${contestGroup.groupLifeLowerLimit}" placeholder="出生年份下限" readonly="readonly" name="groupLifeLowerLimit" onchange="changeValue()" />						
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-md-3 control-label">性别限制</label>
+		<div class="col-md-8">
+			<select class="form-control" isNumber="true"  name="createSexLift">
+				<option value="1" th:selected="${contestGroup.createSexLift==1}">无限制</option>
+				<option value="2" th:selected="${contestGroup.createSexLift==2}">男</option>
+				<option value="3" th:selected="${contestGroup.createSexLift==3}">女</option>
+			</select>
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-md-3 control-label">是否默认选中</label>
+		<div class="col-md-8">
+			<select class="form-control"  isNumber="true" name="createIsChoice">
+				<option value="1" th:selected="${contestGroup.createIsChoice==1}">是</option>
+				<option value="0" th:selected="${contestGroup.createIsChoice==0}">否</option>
+			</select>
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-md-3 control-label"></label>
+		<div class="col-md-8" id="groupAgeRange" style="color:#FF0000">
+			
+		</div>
+	</div>
+</form>
+
+<script>
+	    $("#form").validate(
+	    {
+		    submitHandler : function(form)
+		    {
+		    	var groupLifeUpperLimit = $("#groupLifeUpperLimit").val();//出生年份上限
+				var groupLifeLowerLimit = $("#groupLifeLowerLimit").val();//出生年份下限
+				if(groupLifeLowerLimit-groupLifeUpperLimit>0){
+				}else{
+					parent.swal('', "出生年份上限不能大于等于出生年份下限", 'error');
+					return;
+				}
+			    parent.BootstrapDialog.dialog.enableButtons(false);
+			    $('#form').ajaxSubmit(
+			    {
+			        url : getRootPath_web() + '/contestGroupController/edit',
+			        success : function(data)
+			        {
+				        if (data.success)
+				        {
+					        parent.BootstrapDialog.dialog.close();
+					        parent.BootstrapDialog.table.bootstrapTable('refresh');
+					        parent.swal('', data.msg, 'success')
+				        }
+				        else
+				        {
+				        	parent.BootstrapDialog.dialog.enableButtons(true);
+					        parent.swal('', data.msg, 'error')
+				        }
+			        },
+			    });
+		    }
+	    });
+	
+    
+    $('#groupLifeUpperLimit').datetimepicker({  
+         format: 'yyyy',  
+         weekStart: 1,  
+         autoclose: true,  
+         startView: 4,  
+         minView: 4,  
+         forceParse: false,  
+         language: 'zh-CN'  
+    });  
+		
+	$('#groupLifeLowerLimit').datetimepicker({  
+         format: 'yyyy',  
+         weekStart: 1,  
+         autoclose: true,  
+         startView: 4,  
+         minView: 4,  
+         forceParse: false,  
+         language: 'zh-CN'  
+    });     
+	function changeValue(){
+		var groupLifeUpperLimit = $("#groupLifeUpperLimit").val();//出生年份上限
+		var groupLifeLowerLimit = $("#groupLifeLowerLimit").val();//出生年份下限
+		var myDate = new Date();//获取系统当前时间
+		var year = myDate.getFullYear(); //当年
+		var upperAge = year-groupLifeUpperLimit;
+		var lowerAge = year-groupLifeLowerLimit;
+		if(groupLifeLowerLimit-groupLifeUpperLimit>0){
+			$("#groupAgeRange").html("该小组为"+lowerAge+"-"+upperAge+"岁参赛小组");
+		}else{
+			$("#groupAgeRange").html("出生年份上限不能大于等于出生年份下限");
+		}
+	}
+</script>

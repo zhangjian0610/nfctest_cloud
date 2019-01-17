@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+
+</head>
+
+<body>
+	<script th:src="@{{path}/js/jquery.min.js(path=${contextPath})}" type="text/javascript"></script>
+	<script th:src="@{{path}/js/sweetalert2.js(path=${contextPath})}" type="text/javascript"></script>
+	<script th:inline="javascript">
+	function getRootPath_web()
+    {
+        var curWwwPath = window.document.location.href;
+        // 获取主机地址之后的目录，如： uimcardprj/share/meun.jsp
+        var pathName = window.document.location.pathname;
+        var pos = curWwwPath.indexOf(pathName);
+        // 获取主机地址，如： http://localhost:8083
+        var localhostPaht = curWwwPath.substring(0, pos);
+        // 获取带"/"的项目名，如：/uimcardprj
+        var projectName = pathName.substring(0, pathName.substr(1).indexOf('/') + 1);
+        return (localhostPaht + projectName);
+    }
+    var rootPath = getRootPath_web();
+	
+	/*<![CDATA[*/
+	           
+	    if([[${session.sessionInfo}]]){
+	    	if (self != top)
+	        {
+		        parent.swal(
+		        {
+		        	title:"",
+		            text : [[${message}]],
+		            type : "warning",
+		            confirmButtonText : "确定",
+		            allowOutsideClick : false
+		        });
+	        }
+	        else
+	        {
+		        swal(
+		        {
+		        	title:"",
+		            text : [[${message}]],
+		            type : "warning",
+		            confirmButtonText : "确定",
+		            allowOutsideClick : false
+		        });
+	        }
+	    }
+	    else{       
+        if (self != top)
+        {
+	        parent.swal(
+	        {
+	        	title:"",
+	            text : [[${message}]],
+	            type : "warning",
+	            confirmButtonText : "确定",
+	            allowOutsideClick : false
+	        },function(){ parent.location.href =getRootPath_web(); });
+        }
+        else
+        {
+	        swal(
+	        {
+	        	title:"",
+	            text : [[${message}]],
+	            type : "warning",
+	            confirmButtonText : "确定",
+	            allowOutsideClick : false
+	        },function(){ window.location.href =getRootPath_web(); });
+        }}
+        /*]]>*/
+	</script>
+</body>
+
+</html>

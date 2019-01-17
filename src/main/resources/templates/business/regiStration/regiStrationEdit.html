@@ -1,0 +1,142 @@
+<form class="form-horizontal" id="form" method="post">
+	<div class="form-group">
+		<label class="col-md-3 control-label">业务号码</label>
+		<div class="col-md-8">
+			<input name="userId" type="text" disabled="disabled"
+				class="form-control" autocomplete="off" required="required"
+				maxlength="20" th:value="${m.userId}" /> <input name="regId"
+				type="hidden" class="form-control" th:value="${m.regId}"
+				autocomplete="off" readonly="readonly" required="required" /> <input
+				name="dataVerFlag" type="hidden" class="form-control"
+				th:value="${m.dataVerFlag}" autocomplete="off" readonly="readonly"
+				required="required" />
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-md-3 control-label">真实姓名</label>
+		<div class="col-md-8">
+			<input name="userName" type="text" placeholder="请输入真实姓名"
+				class="form-control" autocomplete="off" required="required"
+				maxlength="10" th:value="${m.userName}" disabled="disabled" />
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-md-3 control-label">所属小组</label>
+		<div class="col-md-8">
+			<input name="groupName" type="text" placeholder="请输入参赛小组"
+				class="form-control" autocomplete="off" required="required"
+				maxlength="20" th:value="${m.groupName}" disabled="disabled" />
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-md-3 control-label">搭档名</label>
+		<div class="col-md-8">
+			<input name="partnerUserId" type="text" placeholder="请输入搭档名"
+				class="form-control" autocomplete="off" required="required"
+				maxlength="10" th:value="${m.partnerUserId}" disabled="disabled" />
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-md-3 control-label">搭档真实姓名</label>
+		<div class="col-md-8">
+			<input name="partnerName" type="text" placeholder="请输入真实姓名"
+				class="form-control" autocomplete="off" required="required"
+				maxlength="10" th:value="${m.partnerName}" disabled="disabled" />
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-md-3 control-label">所属省份</label>
+		<div class="col-md-8">
+			<select class="form-control " style="height: 34px"
+				required="required" placeholder="请选择所属省份" name="contestId"
+				id="provinceId" onchange="changeValue()">
+				<option value="">-选择所属省份-</option>
+				<option th:each="contest : ${province}"
+					th:value="${contest.provinceId}" th:text="${contest.provinceName}"></option>
+			</select>
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-md-3 control-label">所属赛区</label>
+		<div class="col-md-8">
+			<select class="form-control " style="height: 34px"
+				onchange="getGroup();" required="required" placeholder="请选择所属赛区"
+				name="divisionId" id="divisionId">
+				<option value="">-选择所属赛区-</option>
+
+			</select>
+		</div>
+	</div>
+</form>
+
+<script th:inline="javascript">
+	function changeValue() {
+		var provinceId = $("#provinceId").val();
+		$
+				.ajax({
+					url : getRootPath_web()
+							+ '/regiStrationController/getDivisionList',
+					data : {
+						"provinceId" : provinceId
+					},
+					type : "post",
+					success : function(date) {
+						var html = '<option value= "" id="0divisiona">-选择所属赛区-</option>';
+						$.each(date, function(i, value) {
+							html += '<option value= "'+this.divisionId+'">'
+									+ this.divisionName + '</option>';
+						});
+						$("#divisionId").html(html);
+
+					}
+				})
+	}
+	$("#form")
+	.validate(
+			{
+				submitHandler : function(form) {
+					parent.BootstrapDialog.dialog
+							.enableButtons(false);
+					$('#form')
+							.ajaxSubmit(
+									{
+										url : getRootPath_web()
+												+ '/regiStrationController/edit',
+										success : function(
+												data) {
+											if (data.success) {
+												parent.BootstrapDialog.dialog
+														.close();
+												parent.BootstrapDialog.table
+														.bootstrapTable('refresh');
+												parent.swal(
+														'',
+														data.msg,
+														'success')
+											} else {
+												parent.BootstrapDialog.dialog
+												.enableButtons(true);
+												parent.swal(
+														'',
+														data.msg,
+														'error')
+											}
+										},
+									});
+				}
+			});
+	$(document)
+			.ready(
+					function() {
+						$('#datepicker').datetimepicker({
+							language : 'zh-CN',
+							format : "yyyy-mm-dd",
+							minView : 2,
+							autoclose : 1,
+							startView : 3,
+						});
+					});
+	
+	var userId=[[${m.userId}]];
+	 
+</script>

@@ -1,0 +1,18 @@
+<form id="form" method="post">
+	<table class="tableForm">
+		<tr>
+			<th><input name="id" type="hidden" value="${user.id}"> 用户名</th>
+			<td class="tdlabel"><input name="name" type="hidden" value="${user.name}">${user.name}</td>
+		</tr>
+		<tr>
+			<th>密码</th>
+			<td><input id="password" name="pwd" type="password" placeholder="请输入密码" class="easyui-validatebox " data-options="required:true,validType:['NO_SPACE','SETPWD']" maxlength="20"
+				autocomplete="off"></td>
+		</tr>
+		<tr>
+			<th>确认密码</th>
+			<td><input type="password" id="password2" placeholder="请再次输入密码" class="easyui-validatebox" data-options="required:true" validType="EQUALTO['#password']" maxlength="20" autocomplete="off">
+			</td>
+		</tr>
+	</table>
+</form>

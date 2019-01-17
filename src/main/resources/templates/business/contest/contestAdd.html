@@ -1,0 +1,78 @@
+<form class="form-horizontal" id="form" method="post">
+	<div class="form-group">
+		<label class="col-md-3 control-label">项目名称</label>
+		<div class="col-md-8">
+			<input name="contestName" type="text" placeholder="请输入项目名称"
+				class="form-control" value="" autocomplete="off" required="required"
+				maxlength="20" />
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-md-3 control-label">所属省市</label>
+		<div class="col-md-8">
+			<select class="form-control" style="height: 34px"
+				placeholder="请选择所属省市" name="provinceId" id="provinceId"
+				required="required" onchange="getcityId();">
+				<option value="">-选择所属省市-</option>
+				<option th:each="prod : ${provinces}" th:value="${prod.provinceId}"
+					th:text="${prod.provinceName}"></option>
+			</select>
+		</div>
+	</div>
+
+	<div class="form-group">
+		<label class="col-md-3 control-label">所属地方市</label>
+		<div class="col-md-8">
+			<select id="cityId" class=" form-control" style="height: 34px"
+				multiple="multiple"
+				data-options="required:true ,editable:false,panelHeight:'auto'"
+				name="cityIds">
+			</select>
+		</div>
+	</div>
+</form>
+
+<script>
+	function getcityId() {
+		var provinceId = $("#provinceId").val();
+		$.ajax({
+			url : getRootPath_web() + '/contestController/grantTree',
+			data : {
+				"provinceId" : provinceId
+			},
+			type : "post",
+			success : function(date) {
+				var html = "";
+				$.each(date.obj, function(i, value) {
+					html += '<option value= "'+this.cityId+'">' + this.cityName
+							+ '</option>';
+				});
+				$("#cityId").html(html);
+				$("#cityId").selectpicker("refresh");
+			}
+		})
+
+	}
+	$("#form").validate({
+		submitHandler : function(form) {
+			parent.BootstrapDialog.dialog.enableButtons(false);
+			$('#form').ajaxSubmit({
+				url : getRootPath_web() + '/contestController/add',
+				success : function(data) {
+					if (data.success) {
+						parent.BootstrapDialog.dialog.close();
+						parent.BootstrapDialog.table.bootstrapTable('refresh');
+						parent.swal('', data.msg, 'success')
+					} else {
+						parent.BootstrapDialog.dialog.enableButtons(true);
+						parent.swal('', data.msg, 'error')
+					}
+				},
+			});
+		}
+	});
+	$("#cityId").selectpicker({
+		noneSelectedText : '请选择所属城市'
+	});
+	$("#cityId").selectpicker("refresh");
+</script>

@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:include="/head">
+<title>资源管理</title>
+</head>
+<body style="background-color: #F5F5F5; width: 100%">
+	<div class="container-fluid">
+		<div class="row">
+			<div class="panel-body" style="padding: 0px;">
+				<div id="toolbar">
+					<div th:if="${#maps.containsKey(session.sessionInfo.resourceMap,'/resourceController/addPage')}">
+						<div class="columns-left btn-group pull-left">
+							<button id="btn_add" type="button" class="btn btn-default">
+								<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>新增
+							</button>
+						</div>
+					</div>
+				</div>
+
+				<table id="resourceTreeGrid" class="table table-striped table-responsive"></table>
+			</div>
+		</div>
+	</div>
+
+	<div th:include="/jslib::jslib"></div>
+	<script type="text/javascript" th:inline="javascript">
+		//<![CDATA[
+		var $table = $('#resourceTreeGrid');
+        window.operateEvents =
+        {
+            'click #edit' : function(e, value, row, index)
+            {
+	            $.ajax(
+	            {
+	                url : getRootPath_web() + '/resourceController/editPage?id=' + row.id,
+	                type : 'post',
+	                cache : false,
+	                //超时时间设置，单位毫秒
+	                success : function(data)
+	                {
+		                parent.BootstrapDialog.show(
+		                {
+		                    id : 'userInfoEdit',
+		                    title : '修改用户信息',
+		                    message : $("<div></div>").html(data),
+		                    type : BootstrapDialog.TYPE_PRIMARY, //Default value is BootstrapDialog.TYPE_PRIMARY
+		                    closable : false,
+		                    buttons : [
+		                    {
+		                        label : '修改',
+		                        icon : ' glyphicon glyphicon-ok',
+		                        cssClass : 'btn-success',
+		                        action : function(dialog)
+		                        {
+			                        parent.BootstrapDialog.table = $table;
+			                        parent.BootstrapDialog.dialog = dialog;
+			                        dialog.getModalBody().find("form").submit();
+
+		                        }
+		                    },
+		                    {
+		                        id : 'cancel',
+		                        label : '取消',
+		                        icon : 'glyphicon glyphicon-remove',
+		                        cssClass : 'btn-danger',
+		                        action : function(dialog)
+		                        {
+			                        dialog.close();
+		                        }
+		                    } ],
+		                });
+	                },
+	                error : function(data)
+	                {
+		                ajaxDialogError(data);
+	                }
+
+	            });
+            },
+            'click #remove' : function(e, value, row, index)
+            {
+
+	            parent.swal(
+	            {
+	                title : "您确定要删除吗？",
+	                type : "warning",
+	                showCancelButton : true,
+	                closeOnConfirm : false,
+	                confirmButtonText : "确定",
+	                cancelButtonText : "取消",
+	                showLoaderOnConfirm : true,
+	            }, function()
+	            {
+		            $.ajax(
+		            {
+		                url : getRootPath_web() + '/resourceController/delete',
+		                type : "post",
+		                data :
+		                {
+			                "id" : row.id
+		                }
+		            }).done(function(data)
+		            {
+			            if (data.success)
+			            {
+
+				            $table.bootstrapTable('remove',
+				            {
+				                field : 'id',
+				                values : [ row.id ]
+				            });
+				            parent.swal("操作成功!", data.msg, "success");
+			            }
+			            else
+			            {
+				            parent.swal("操作失败!", data.msg, "error");
+			            }
+		            }).error(function(data)
+		            {
+			            parent.swal("操作失败!", data.msg, "error");
+		            });
+	            });
+            }
+        };
+
+        $('#resourceTreeGrid').bootstrapTable(
+        {
+            class : 'bootstrap-table table-responsive',
+            method : "post", //请求数据的ajax类型
+            url : getRootPath_web() + '/resourceController/treeGrid', //请求数据的ajax的url
+            pagination : false,//分页请设置为false
+            treeView : true,//是否开启树视图
+            uniqueId : "id", //每一行的唯一标识，一般为主键列  
+            treeId : "id",//id字段
+            parentId : "pid",
+            treeCollapseAll : false,
+            treeField : "name",//展示树的字段
+            showRefresh : true, //是否显示刷新按钮  
+            toolbar : "#toolbar",
+            columns : [
+            {
+                title : '资源名称',
+                field : 'name',
+            },
+            {
+                title : '资源路径',
+                field : 'typeName',
+            },
+            {
+                title : '资源类型',
+                field : 'url',
+            },
+            {
+                title : '操作',
+                formatter : operateFormatter,
+                events : operateEvents,
+            } ]
+        });
+        function operateFormatter(value, row, index)
+        {
+        	var val = "";
+        	if([[${#maps.containsKey(session.sessionInfo.resourceMap,'/resourceController/editPage')}]]){
+        		val += '<a rel="tooltip" id="edit"   title="修改"  class="btn btn-simple btn-warning btn-icon table-action" href="javascript:void(0)"><i class="fa fa-edit"></i></a>';
+        	}
+        	if([[${#maps.containsKey(session.sessionInfo.resourceMap,'/resourceController/delete')}]]){
+        		val += '<a rel="tooltip" id="remove" title="删除" class="btn btn-simple btn-danger btn-icon table-action" href="javascript:void(0)"><i class="fa fa-remove"></i></a>';
+        	}
+        	return val;
+        }
+
+        $("#toolbar").on("click", "#btn_add", function()
+        {
+
+	        $.ajax(
+	        {
+	            url : getRootPath_web() + '/resourceController/addPage',
+	            type : 'post',
+	            //超时时间设置，单位毫秒
+	            success : function(data)
+	            {
+		            parent.BootstrapDialog.show(
+		            {
+		                id : 'userAdd',
+		                title : '新增资源',
+		                message : $("<div></div>").html(data),
+		                type : BootstrapDialog.TYPE_PRIMARY,
+		                closable : false,
+		                buttons : [
+		                {
+		                    label : '添加',
+		                    icon : ' glyphicon glyphicon-ok',
+		                    cssClass : 'btn-success',
+		                    action : function(dialog)
+		                    {
+			                    parent.BootstrapDialog.table = $table;
+			                    parent.BootstrapDialog.dialog = dialog;
+			                    dialog.getModalBody().find("form").submit();
+		                    }
+		                },
+		                {
+		                    id : 'cancel',
+		                    label : '取消',
+		                    icon : 'glyphicon glyphicon-remove',
+		                    cssClass : 'btn-danger',
+		                    action : function(dialog)
+		                    {
+			                    dialog.close();
+		                    }
+		                } ],
+		            });
+	            },
+	            error : function(data)
+	            {
+		            ajaxDialogError(data);
+	            }
+	        });
+        });
+      //]]>
+	</script>
+</body>
+</html>

@@ -1,0 +1,91 @@
+<style>
+.file {
+	position: relative;
+	display: inline-block;
+	background: #D0EEFF;
+	border: 1px solid #99D3F5;
+	border-radius: 4px;
+	padding: 4px 12px;
+	overflow: hidden;
+	color: #1E88C7;
+	text-decoration: none;
+	text-indent: 0;
+	line-height: 20px;
+}
+
+.file input {
+	position: absolute;
+	font-size: 100px;
+	right: 0;
+	top: 0;
+	opacity: 0;
+}
+
+.file:hover {
+	background: #AADFFD;
+	border-color: #78C3F3;
+	color: #004974;
+	text-decoration: none;
+}
+</style>
+
+
+<form class="form-horizontal" id="form" method="post">
+	<div class="form-group">
+		<label class="col-md-3 control-label">导入</label>
+		<div class="col-md-8">
+			<input name="professionalPlayerFile" type="file" class="file"
+				value="" required="required" />
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-md-3 control-label">备注</label>
+		<div class="col-md-9" style="margin-top: 6px;">
+			<span>专业运动员批量文件的格式只能为xls或者xlsx的EXCEL表格</span>
+		</div>
+	</div>
+</form>
+
+<script>
+	$(document)
+			.ready(
+					function() {
+
+						$("#form")
+								.validate(
+										{
+											submitHandler : function(form) {
+												parent.BootstrapDialog.dialog
+														.enableButtons(false);
+												$('#form')
+														.ajaxSubmit(
+																{
+																	url : getRootPath_web()
+																			+ '/professionalPlayerController/batchImport',
+																	success : function(
+																			data) {
+																		if (data.success) {
+																			parent.BootstrapDialog.dialog
+																					.close();
+																			parent.BootstrapDialog.table
+																					.bootstrapTable('refresh');
+																			swal(
+																					'',
+																					data.msg,
+																					'success')
+																		} else {
+																			parent.BootstrapDialog.dialog
+																					.close();
+																			parent.BootstrapDialog.table
+																					.bootstrapTable('refresh');
+																			swal(
+																					'',
+																					data.msg,
+																					'error')
+																		}
+																	},
+																});
+											}
+										});
+					});
+</script>

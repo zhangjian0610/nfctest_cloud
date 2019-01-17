@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:include="/head">
+</head>
+<body style="background-color: #F5F5F5; width: 100%">
+<div class="container-fluid">
+    <div class="row">
+        <div class="panel-body" style="padding: 0px;">
+            <div id="toolbar">
+                <!--todo-->
+                <div class="pull-left columns-left">
+                    <input id="name" class="form-control" placeholder="请输入设备ID" type="text" name="deviceId" maxlength="20px" />
+                </div>
+                <div class="pull-left columns-left">
+                    <button id="btn_search" type="button" class="btn btn-default">
+                        <span class="glyphicon glyphicon-search" aria-hidden="true"></span>搜索
+                    </button>
+                </div>
+                <div class="pull-left columns-left">
+                    <button id="btn_empty" type="button" class="btn btn-default">
+                        <span class="glyphicon glyphicon-search" aria-hidden="true"></span>清空
+                    </button>
+                </div>
+            </div>
+            <table id="bootstrap-table" class="table table-striped"></table>
+
+        </div>
+    </div>
+</div>
+
+<div th:include="/jslib::jslib"></div>
+<script type="text/javascript" th:inline="javascript">
+    var $table = $('#bootstrap-table');
+    var iframeFileName=null;
+    function getFile2(name){
+
+        //parent.window.location.href=getRootPath_web() + '/fileController/fileInfo';
+
+        var url = getRootPath_web() + "/fileController/fileInfo?filename="+name;
+
+        window.open(url,"_blank");
+        /*iframeFileName = name;
+        /*iframeFileName = name;
+        $.ajax(
+            {
+                //todo
+                url : getRootPath_web() + '/fileController/fileInfo',
+                type : 'post',
+                cache : false,
+
+                //超时时间设置，单位毫秒
+                success : function(data)
+                {
+                    alert(iframeFileName)
+                    var newWin=window.open('');
+                    newWin.document.write(data);
+
+                },
+                error : function(data)
+                {
+                    ajaxDialogError(data);
+                }
+            });*/
+
+    }
+    $().ready(function () {
+
+
+        function operateFormatter(value, row, index) {
+
+            var val = "";
+            if ([[${#maps.containsKey(session.sessionInfo.resourceMap,'/adminController/editPage')}]]) {
+                val += '<a rel="tooltip" id="edit"   title="修改"  class="btn btn-simple btn-warning btn-icon table-action" href="javascript:void(0)"><i class="fa fa-edit"></i></a>';
+            }
+            if ([[${#maps.containsKey(session.sessionInfo.resourceMap,'/adminController/delete')}]]) {
+                val += '<a rel="tooltip" id="remove" title="删除" class="btn btn-simple btn-danger btn-icon table-action" href="javascript:void(0)"><i class="fa fa-remove"></i></a>';
+            }
+            return val;
+        }
+
+        window.operateEvents =
+            {
+                // 'click #edit' : function(e, value, row, index)
+                // {
+                //
+                //     $.ajax(
+                //         {
+                //             //todo
+                //             url : getRootPath_web() + '/fileController/editPage?id=' + row.id,
+                //             type : 'post',
+                //             cache : false,
+                //             //超时时间设置，单位毫秒
+                //             success : function(data)
+                //             {
+                //                 parent.BootstrapDialog.show(
+                //                     {
+                //                         id : 'fileInfoEdit',
+                //                         title : '修改设备信息',
+                //                         message : $("<div></div>").html(data),
+                //                         type : BootstrapDialog.TYPE_PRIMARY,
+                //                         closable : false,
+                //                         buttons : [
+                //                             {
+                //                                 label : '修改',
+                //                                 icon : ' glyphicon glyphicon-ok',
+                //                                 cssClass : 'btn-success',
+                //                                 action : function(dialog)
+                //                                 {
+                //                                     parent.BootstrapDialog.table = $table;
+                //                                     parent.BootstrapDialog.dialog = dialog;
+                //                                     dialog.getModalBody().find("form").submit();
+                //
+                //                                 }
+                //                             },
+                //                             {
+                //                                 id : 'cancel',
+                //                                 label : '取消',
+                //                                 icon : 'glyphicon glyphicon-remove',
+                //                                 cssClass : 'btn-danger',
+                //                                 action : function(dialog)
+                //                                 {
+                //                                     dialog.close();
+                //                                 }
+                //                             } ],
+                //                     });
+                //             },
+                //             error : function(data)
+                //             {
+                //                 ajaxDialogError(data);
+                //             }
+                //         });
+                // },
+                'click #remove': function (e, value, row, index) {
+
+                    parent.swal(
+                        {
+                            title: "您确定要删除吗？",
+                            type: "warning",
+                            showCancelButton: true,
+                            closeOnConfirm: false,
+                            confirmButtonText: "确定",
+                            cancelButtonText: "取消",
+                            showLoaderOnConfirm: true,
+                        }, function () {
+                            $.ajax(
+                                {
+                                    //todo
+                                    url: getRootPath_web() + '/fileController/delete',
+                                    type: "post",
+                                    data:
+                                        {
+                                            "id": row.id
+                                        }
+                                }).done(function (data) {
+                                if (data.success) {
+
+                                    $table.bootstrapTable('remove',
+                                        {
+                                            field: 'id',
+                                            values: [row.id]
+                                        });
+                                    parent.swal("操作成功!", data.msg, "success");
+                                }
+                                else {
+                                    parent.swal("操作失败!", data.msg, "error");
+                                }
+                            }).error(function (data) {
+                                parent.swal("操作失败!", data.msg, "error");
+                            });
+                        });
+                }
+            };
+        //搜索
+        $("#toolbar").on("click", "#btn_search", function () {
+            $table.bootstrapTable('refresh');
+        });
+        //清空
+        $("#toolbar").on("click", "#btn_empty", function () {
+            $("#name").val(""), $table.bootstrapTable('refresh');
+        });
+
+        function queryParams(params) {
+            var temp =
+                { //这里的键的名字和控制器的变量名必须一直，这边改动，控制器也需要改成一样的
+                    rows: params.limit, //页面大小
+                    page: (params.offset / params.limit) + 1,//页码
+                    order: params.order, //asc desc
+                    sort: params.sort,//排序列名
+                    deviceId: $("#name").val(),
+                    //排位命令（desc，asc）
+                };
+            return temp;
+        }
+        //
+        // function getFile(name) {
+        //     var iframe = $("#main", parent.document);
+        //     iframe.attr("src", getRootPath_web() + '/fileController/fileInfo');
+        //     iframeFileName = name;
+        //     $("body").mLoading();
+        //     if (!iframe.readyState || iframe.readyState == "complete") {
+        //         iframe.on("load", function () {
+        //             $("body").mLoading("hide");
+        //         });
+        //     }
+        //     var ul_breadcrumb = $("#breadcrumb", parent.document);
+        //
+        //     ul_breadcrumb.append("<li><a href='#'><span class='icon icon-beaker'> </span>" + "文件详情" + "</a></li>");
+        //
+        // }
+
+
+
+
+        $table.bootstrapTable(
+            {
+                //todo
+                url: rootPath + "/fileController/dataGrid",//请求后台的URL（*）
+                method: 'post', //请求方式（*）
+                toolbar: "#toolbar",
+                uniqueId: "id", //每一行的唯一标识，一般为主键列
+                //striped : true, //是否显示行间隔色
+                cache: false, //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
+                pagination: true, //是否显示分页（*）
+                contentType: 'application/x-www-form-urlencoded; charset=UTF-8',//这个需要增加上 否则控件默认使用application/json
+                sortOrder: "asc", //排序方式
+                sortName: "createdatetime",
+                queryParams: queryParams, //传递参数（*），这里应该返回一个object，即形如{param1:val1,param2:val2}
+                sidePagination: "server", //分页方式：client客户端分页，server服务端分页（*）
+                pageNumber: 1, //初始化加载第一页，默认第一页
+                pageSize: 10, //每页的记录行数（*）
+                pageList: [5, 15, 20, 25, 30, 35], //可供选择的每页的行数（*）
+                showColumns: true, //是否显示所有的列
+                showRefresh: true, //是否显示刷新按钮
+                clickToSelect: true, //是否启用点击选中行
+                searchOnEnterKey: true,
+                trimOnSearch: false,
+                searchAlign: 'left',
+                height: $(window).height(),
+                columns: [
+                    {
+                        field: 'fileName',
+                        title: '文件名',
+                        formatter: function (value, row, index) {
+                            // //todo
+                            // if([[${#maps.containsKey(session.sessionInfo.resourceMap,'/fileController/fileInfo')}]]){
+                            return '<span style=" text-decoration: underline;cursor:pointer;   color: blue;" onclick="getFile2(\'' + value + '\')">' + value + '</span>';
+
+                        }
+                    },
+
+                    {
+                        field: 'deviceId',
+                        title: '设备ID',
+                    },
+                    {
+                        field: 'uploadTime',
+                        title: '上传时间',
+                        formatter: function (value, row, index) {
+                            var d = new Date(value).toJSON();
+                            var date = new Date(+new Date(d)+8*3600*1000).toISOString().replace(/T/g,' ').replace(/\.[\d]{3}Z/,'')
+                            return date;
+                        }
+                    },
+                ],
+
+                icons:
+                    {
+                        refresh: 'fa fa-refresh'
+                    },
+                formatShowingRows: function (pageFrom, pageTo, totalRows) {
+                    return "共" + totalRows + "条记录";
+                },
+                onLoadSuccess: function () {
+                    $('[rel="tooltip"]').tooltip();
+                },
+            });
+
+        $(window).resize(function () {
+            $table.bootstrapTable('resetView');
+
+        });
+        $table.bootstrapTable('hideColumn', 'createdatetime');
+        $table.bootstrapTable('hideColumn', 'validdatetime');
+    });
+</script>
+
+
+
+</body>
+</html>

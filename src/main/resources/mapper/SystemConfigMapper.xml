@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bupt.cardtest.dao.SystemConfigMapper">
+  <resultMap id="BaseResultMap" type="com.bupt.cardtest.model.bean.SystemConfig">
+    <id column="CONF_ID" jdbcType="VARCHAR" property="confId" />
+    <result column="CONF_NAME" jdbcType="VARCHAR" property="confName" />
+    <result column="CONF_CONTEXT" jdbcType="VARCHAR" property="confContext" />
+    <result column="CONF_DESC" jdbcType="VARCHAR" property="confDesc" />
+    <result column="UPDATE_TIME" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="ADMIN_NAME" jdbcType="VARCHAR" property="adminName" />
+    <result column="DATA_VER_FLAG" jdbcType="SMALLINT" property="dataVerFlag" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    CONF_ID, CONF_NAME, CONF_CONTEXT, CONF_DESC, UPDATE_TIME, ADMIN_NAME, DATA_VER_FLAG
+  </sql>
+  <select id="selectByExample" parameterType="com.bupt.cardtest.model.bean.SystemConfigExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from t_system_config
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_system_config
+    where CONF_ID = #{confId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from t_system_config
+    where CONF_ID = #{confId,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.bupt.cardtest.model.bean.SystemConfigExample">
+    delete from t_system_config
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.bupt.cardtest.model.bean.SystemConfig">
+    insert into t_system_config (CONF_ID, CONF_NAME, CONF_CONTEXT, 
+      CONF_DESC, UPDATE_TIME, ADMIN_NAME, 
+      DATA_VER_FLAG)
+    values (#{confId,jdbcType=VARCHAR}, #{confName,jdbcType=VARCHAR}, #{confContext,jdbcType=VARCHAR}, 
+      #{confDesc,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP}, #{adminName,jdbcType=VARCHAR}, 
+      #{dataVerFlag,jdbcType=SMALLINT})
+  </insert>
+  <insert id="insertSelective" parameterType="com.bupt.cardtest.model.bean.SystemConfig">
+    insert into t_system_config
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="confId != null">
+        CONF_ID,
+      </if>
+      <if test="confName != null">
+        CONF_NAME,
+      </if>
+      <if test="confContext != null">
+        CONF_CONTEXT,
+      </if>
+      <if test="confDesc != null">
+        CONF_DESC,
+      </if>
+      <if test="updateTime != null">
+        UPDATE_TIME,
+      </if>
+      <if test="adminName != null">
+        ADMIN_NAME,
+      </if>
+      <if test="dataVerFlag != null">
+        DATA_VER_FLAG,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="confId != null">
+        #{confId,jdbcType=VARCHAR},
+      </if>
+      <if test="confName != null">
+        #{confName,jdbcType=VARCHAR},
+      </if>
+      <if test="confContext != null">
+        #{confContext,jdbcType=VARCHAR},
+      </if>
+      <if test="confDesc != null">
+        #{confDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="adminName != null">
+        #{adminName,jdbcType=VARCHAR},
+      </if>
+      <if test="dataVerFlag != null">
+        #{dataVerFlag,jdbcType=SMALLINT},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.bupt.cardtest.model.bean.SystemConfigExample" resultType="java.lang.Long">
+    select count(*) from t_system_config
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update t_system_config
+    <set>
+      <if test="record.confId != null">
+        CONF_ID = #{record.confId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.confName != null">
+        CONF_NAME = #{record.confName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.confContext != null">
+        CONF_CONTEXT = #{record.confContext,jdbcType=VARCHAR},
+      </if>
+      <if test="record.confDesc != null">
+        CONF_DESC = #{record.confDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="record.updateTime != null">
+        UPDATE_TIME = #{record.updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.adminName != null">
+        ADMIN_NAME = #{record.adminName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.dataVerFlag != null">
+        DATA_VER_FLAG = #{record.dataVerFlag,jdbcType=SMALLINT},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update t_system_config
+    set CONF_ID = #{record.confId,jdbcType=VARCHAR},
+      CONF_NAME = #{record.confName,jdbcType=VARCHAR},
+      CONF_CONTEXT = #{record.confContext,jdbcType=VARCHAR},
+      CONF_DESC = #{record.confDesc,jdbcType=VARCHAR},
+      UPDATE_TIME = #{record.updateTime,jdbcType=TIMESTAMP},
+      ADMIN_NAME = #{record.adminName,jdbcType=VARCHAR},
+      DATA_VER_FLAG = #{record.dataVerFlag,jdbcType=SMALLINT}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.bupt.cardtest.model.bean.SystemConfig">
+    update t_system_config
+    <set>
+      <if test="confName != null">
+        CONF_NAME = #{confName,jdbcType=VARCHAR},
+      </if>
+      <if test="confContext != null">
+        CONF_CONTEXT = #{confContext,jdbcType=VARCHAR},
+      </if>
+      <if test="confDesc != null">
+        CONF_DESC = #{confDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="adminName != null">
+        ADMIN_NAME = #{adminName,jdbcType=VARCHAR},
+      </if>
+      <if test="dataVerFlag != null">
+        DATA_VER_FLAG = #{dataVerFlag,jdbcType=SMALLINT},
+      </if>
+    </set>
+    where CONF_ID = #{confId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.bupt.cardtest.model.bean.SystemConfig">
+    update t_system_config
+    set CONF_NAME = #{confName,jdbcType=VARCHAR},
+      CONF_CONTEXT = #{confContext,jdbcType=VARCHAR},
+      CONF_DESC = #{confDesc,jdbcType=VARCHAR},
+      UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP},
+      ADMIN_NAME = #{adminName,jdbcType=VARCHAR},
+      DATA_VER_FLAG = #{dataVerFlag,jdbcType=SMALLINT}
+    where CONF_ID = #{confId,jdbcType=VARCHAR}
+  </update>
+</mapper>

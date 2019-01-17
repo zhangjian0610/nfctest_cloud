@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bupt.cardtest.dao.UpfileMapper">
+  <resultMap id="BaseResultMap" type="com.bupt.cardtest.model.bean.Upfile">
+    <id column="file_name" jdbcType="VARCHAR" property="fileName" />
+    <result column="device_id" jdbcType="VARCHAR" property="deviceId" />
+    <result column="path" jdbcType="VARCHAR" property="path" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="upload_time" jdbcType="TIMESTAMP" property="uploadTime" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    file_name, device_id, path, create_time, upload_time
+  </sql>
+  <select id="selectByExample" parameterType="com.bupt.cardtest.model.bean.UpfileExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from upfile
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from upfile
+    where file_name = #{fileName,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from upfile
+    where file_name = #{fileName,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.bupt.cardtest.model.bean.UpfileExample">
+    delete from upfile
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.bupt.cardtest.model.bean.Upfile">
+    insert into upfile (file_name, device_id, path, 
+      create_time, upload_time)
+    values (#{fileName,jdbcType=VARCHAR}, #{deviceId,jdbcType=VARCHAR}, #{path,jdbcType=VARCHAR}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{uploadTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.bupt.cardtest.model.bean.Upfile">
+    insert into upfile
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="fileName != null">
+        file_name,
+      </if>
+      <if test="deviceId != null">
+        device_id,
+      </if>
+      <if test="path != null">
+        path,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="uploadTime != null">
+        upload_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="fileName != null">
+        #{fileName,jdbcType=VARCHAR},
+      </if>
+      <if test="deviceId != null">
+        #{deviceId,jdbcType=VARCHAR},
+      </if>
+      <if test="path != null">
+        #{path,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="uploadTime != null">
+        #{uploadTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.bupt.cardtest.model.bean.UpfileExample" resultType="java.lang.Long">
+    select count(*) from upfile
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update upfile
+    <set>
+      <if test="record.fileName != null">
+        file_name = #{record.fileName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.deviceId != null">
+        device_id = #{record.deviceId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.path != null">
+        path = #{record.path,jdbcType=VARCHAR},
+      </if>
+      <if test="record.createTime != null">
+        create_time = #{record.createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.uploadTime != null">
+        upload_time = #{record.uploadTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update upfile
+    set file_name = #{record.fileName,jdbcType=VARCHAR},
+      device_id = #{record.deviceId,jdbcType=VARCHAR},
+      path = #{record.path,jdbcType=VARCHAR},
+      create_time = #{record.createTime,jdbcType=TIMESTAMP},
+      upload_time = #{record.uploadTime,jdbcType=TIMESTAMP}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.bupt.cardtest.model.bean.Upfile">
+    update upfile
+    <set>
+      <if test="deviceId != null">
+        device_id = #{deviceId,jdbcType=VARCHAR},
+      </if>
+      <if test="path != null">
+        path = #{path,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="uploadTime != null">
+        upload_time = #{uploadTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where file_name = #{fileName,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.bupt.cardtest.model.bean.Upfile">
+    update upfile
+    set device_id = #{deviceId,jdbcType=VARCHAR},
+      path = #{path,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      upload_time = #{uploadTime,jdbcType=TIMESTAMP}
+    where file_name = #{fileName,jdbcType=VARCHAR}
+  </update>
+
+
+  <!--通过用户名 设备ID显示 所有该用户名下指定设备设备上传的所有文件-->
+  <select id="dataGrid" parameterType="com.bupt.cardtest.model.pagebean.AdminDevicePage"
+          resultMap="BaseResultMap">
+    select
+    upfile.file_name,upfile.device_id,upfile.path,upfile.create_time,upfile.upload_time
+    from
+    upfile
+    INNER JOIN
+    admin_device
+    ON
+    upfile.device_id=admin_device.device_id
+    where 1=1
+    <if test="id!= null and id!=''">
+      and admin_device.admin_id=#{id}
+    </if>
+    <if test="deviceId!= null and deviceId!=''">
+      and upfile.device_id=#{deviceId}
+    </if>
+    order by
+    upfile.upload_time
+
+  </select>
+
+
+  <select id="countDataGrid" parameterType="com.bupt.cardtest.model.pagebean.AdminDevicePage"
+          resultType="java.lang.Long">
+    select
+    count(*)
+    from
+    upfile
+    INNER JOIN
+    admin_device
+    ON
+    upfile.device_id=admin_device.device_id
+    where 1=1
+    <if test="id!= null and id!=''">
+      and admin_device.admin_id=#{id}
+    </if>
+    <if test="deviceId!= null and deviceId!=''">
+      and upfile.device_id=#{deviceId}
+    </if>
+    order by
+    upfile.upload_time
+
+  </select>
+</mapper>

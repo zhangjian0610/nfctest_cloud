@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8" />
+<link th:href="@{{path}/css/bootstrap.min.css(path=${contextPath})}" rel="stylesheet" />
+</head>
+<body>
+	<div class="col-md-8 col-sm-offset-2 text-center">
+		<img th:src="@{{path}/images/404.jpg(path=${contextPath})}" width="100%" style="overflow: hidden; max-width: 550px" />
+		<div style="color: #468BCE; font-weight: bold; font-size: 30px">404 页面无法找到</div>
+	</div>
+</body>
+</html>

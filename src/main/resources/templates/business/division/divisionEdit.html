@@ -1,0 +1,234 @@
+<form class="form-horizontal" id="form" method="post">
+	<!-- 	<div class="form-group">
+		<label class="col-md-3 control-label">赛区标识</label>
+		<div class="col-md-8">
+			<input name="divisionId" type="text" placeholder="请输入赛区标识" class="form-control" value="" autocomplete="off" required="required" />
+		</div>
+	</div> -->
+	<div class="form-group">
+		<label class="col-md-3 control-label">赛区名称</label>
+		<div class="col-md-8">
+			<input name="divisionId" th:value="${m.divisionId}" style="display: none;" /> <input name="divisionName" type="text" placeholder="请输入赛区名称" class="form-control" value="" autocomplete="off"
+				required="required" th:value="${m.divisionName}" maxlength="20" />
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-md-3 control-label">赛区状态</label>
+		<div class="col-md-8">
+			<select class="form-control" name="contestStatus" required="required">
+				<option value="1" th:selected="${m.contestStatus==1}">未开始</option>
+				<option value="2" th:selected="${m.contestStatus==2}">已开始</option>
+				<option value="3" th:selected="${m.contestStatus==3}">已结束</option>
+			</select>
+		</div>
+	</div>
+
+	<div class="form-group">
+		<label class="col-md-3 control-label">所属项目</label>
+		<div class="col-md-8">
+			<select class="form-control" style="height: 34px" required="required" placeholder="请选择所属项目" name="contestId" id="contestId" onchange="changeValue()">
+				<option th:each="contest : ${contestList}" th:selected="${m.contestId==contest.contestId}" th:value="${contest.contestId}" th:text="${contest.contestName}"></option>
+			</select>
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-md-3 control-label">参赛小组</label>
+		<div class="col-md-8" id="group"></div>
+	</div>
+	<div class="form-group">
+		<label class="col-md-3 control-label">所属省市</label>
+		<div class="col-md-8">
+			<select id="provinceId" class="form-control" min="0" required="required" style="height: 34px" placeholder="请选择所属省市" name="provinceId" onchange="getcityId()">
+			</select>
+		</div>
+	</div>
+
+	<div class="form-group">
+		<label class="col-md-3 control-label">所属地方市</label>
+		<div class="col-md-8">
+			<select id="cityId" class="form-control" required="required" style="height: 34px" placeholder="请选择所属地方市" name="cityId">
+			</select>
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-md-3 control-label">报名开始时间</label>
+		<div class="col-md-8">
+			<input name="signStartDate" id="datepicker" type="text" th:if="${m.signStartDate!=null}" th:value="${#dates.format(m.signStartDate,'yyyy-MM-dd')}" required="required" placeholder="请输入报名开始时间"
+				class="form-control datepicker" value="" readonly="readonly" />
+
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-md-3 control-label">报名结束时间</label>
+		<div class="col-md-8">
+			<input name="signEndDate" id="datepicker2" type="text" readonly="readonly" th:if="${m.signEndDate!=null}" th:value="${#dates.format(m.signEndDate,'yyyy-MM-dd ')}" required="required" placeholder="请输入报名结束时间"
+				class="form-control datepicker" value="" />
+
+		</div>
+	</div>
+
+</form>
+
+<script th:inline="javascript">
+//<![CDATA[
+var pId= [[${m.provinceId}]];
+var cId= [[${m.cityId}]];
+var divisionId= [[${m.divisionId}]];
+var contestIds= [[${m.contestId}]];
+
+$(document).ready(function() {
+	$('#datepicker').datetimepicker({
+		language : 'zh-CN',
+		format : "yyyy-mm-dd",
+		minView : 2,
+		autoclose : 1,
+		startView : 3
+	});
+	$('#datepicker2').datetimepicker({
+		language : 'zh-CN',
+		format : "yyyy-mm-dd",
+		minView : 2,
+		autoclose : 1,
+		startView : 3
+	});
+	changeValue();
+});
+						$("#form")
+								.validate(
+										{
+											submitHandler : function(form) {
+												var signStartDate = $("#datepicker").val();//报名开始时间
+												var signEndDate = $("#datepicker2").val();//报名结束时间
+												var d1 = new Date(signStartDate.replace(/\-/g, "\/"));  
+												var d2 = new Date(signEndDate.replace(/\-/g, "\/"));  
+												if(d1 >=d2){
+													parent.swal('', '报名开始时间不能大于报名结束时间', 'error')
+													return;
+												}
+												parent.BootstrapDialog.dialog
+														.enableButtons(false);
+												 $.each($(".input-group").find("input[type=text]"), function(index, value)
+													    {
+														    $(value).attr('name','numbers');
+													    })
+												$('#form')
+														.ajaxSubmit(
+																{
+																	url : getRootPath_web()
+																			+ '/divisionController/edit',
+																	success : function(
+																			data) {
+																		if (data.success) {
+																			parent.BootstrapDialog.dialog
+																					.close();
+																			parent.BootstrapDialog.table
+																					.bootstrapTable('refresh');
+																			parent.swal(
+																					'',
+																					data.msg,
+																					'success')
+																		} else {
+																			parent.BootstrapDialog.dialog
+																			.enableButtons(true);
+																			parent.swal(
+																					'',
+																					data.msg,
+																					'error')
+																		}
+																	},
+																});
+											}
+										});
+	function changeValue() {
+		$("#cityId").html('<option value= "">---请选择所属地方市---</option>');
+		var htmlgroup = '';
+		var contestId = $("#contestId").val();
+		if(!contestId){
+			contestId=contestIds;
+		}
+		$
+				.ajax({
+					url : getRootPath_web()
+							+ '/contestGroupController/getGroup',
+					async : true,
+					data : {
+						"contestId" : contestId,
+						"divisionId" : divisionId
+					},
+					type : "post",
+					success : function(date) {
+						   var htmlgroup ='';
+						$.each(date.obj, function(i, value)
+						        {
+							        var createIsChoice = value.createIsChoice;
+
+							         htmlgroup +=
+							                '<div class="input-group"><span class="input-group-addon"> <input type="checkbox" value="' + value.groupId + '"  onclick="getNumbers(\'' + this.groupId + '\')" id="' + this.groupId + '" name="groups"  ' + (createIsChoice == 1 ? 'checked="checked"' : '')
+							                        + 'autocomplete="off" required="required"  /></span><span class="input-group-addon"  style="width:50%; text-align:left">' + value.groupName + '</span><input type="text" value="'+(value.numbers == undefined ? '' : value.numbers)+'" class="form-control" ' + (createIsChoice == 1 ? '' : 'disabled="disabled"')
+							                        + ' placeholder="请输入小组人数" name="numbers' + i + '" digits="digits" min="1" isNumber="true" required="required" /></div>'
+						        });
+						
+						 if(!htmlgroup){
+						        $("#group").html('<input class="form-control" required="required"   placeholder="该项目下无小组信息" readonly="readonly"/>');
+
+					        }else{
+						        $("#group").html(htmlgroup);
+
+					        }
+					}
+				});
+
+		$.ajax({
+			url : getRootPath_web() + '/divisionController/getProvinceList',
+			async : false,
+			data : {
+				"contestId" : contestId
+			},
+			type : "post",
+			success : function(date) {
+				var html = '';
+				$.each(date, function(i, value) {
+					html += '<option id="'+this.provinceId+'province" value= "'+this.provinceId+'">'
+							+ this.provinceName + '</option>';
+				});
+				$("#provinceId").html(html);
+				$("#"+pId+"province").attr("selected","selected")
+				getcityId();
+			}
+		});
+	}
+	function getNumbers(id) {
+		if ($("#" + id + "").is(':checked'))
+	    {
+		    $("#" + id).parents(".input-group").find("input[type=text]").removeAttr("disabled");
+	    }
+	    else
+	    {
+		    $("#" + id).parents(".input-group").find("input[type=text]").attr("disabled", "disabled");
+
+	    }
+	}
+	function getcityId() {
+		var contestId = $("#contestId").val();
+		var provinceId = $("#provinceId").val();
+		$.ajax({
+			url : getRootPath_web() + '/divisionController/getLocalCityList',		
+			async : false,
+			data : {
+				"provinceId" : provinceId,
+				"contestId" : contestId
+			},
+			type : "post",
+			success : function(date) {
+				var html = '<option value= "">---请选择所属地方市---</option>';
+				$.each(date, function(i, value) {
+					html += '<option id="'+this.cityId+'city" value= "'+this.cityId+'">' + this.cityName
+							+ '</option>';
+				});
+				$("#cityId").html(html);
+				$("#"+cId+"city").attr("selected","selected")
+			}
+		})
+	}
+	//]]>
+</script>

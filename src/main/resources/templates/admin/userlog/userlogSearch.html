@@ -1,0 +1,88 @@
+<form class="form-horizontal" id="form" method="post">
+	<div class="form-group">
+		<label class="col-xs-3 col-sm-3 col-md-3 control-label">登录用户名：</label>
+		<div class="col-xs-3 col-sm-3 col-md-3 ">
+			<p class="form-control-static" th:text="${userlog.adminName}"></p>
+		</div>
+		<label class="col-xs-3 col-sm-3 col-md-3 control-label">资源名称：</label>
+		<div class="col-xs-3 col-sm-3 col-md-3">
+			<p class="form-control-static" th:text="${userlog.text}"></p>
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-xs-3 col-sm-3 col-md-3 control-label">资源URL：</label>
+		<div class="col-xs-3 col-sm-3 col-md-3">
+			<p class="form-control-static" th:text="${userlog.url}"></p>
+		</div>
+		
+	</div>
+	<div class="form-group">
+		<label class="col-xs-3 col-sm-3 col-md-3 control-label">是否发生异常：</label>
+		<div class="col-xs-3 col-sm-3 col-md-3">
+			<p class="form-control-static"
+				th:text="${userlog.isHavaerror == 0}?'否':'是'"></p>
+		</div>
+		<label class="col-xs-3 col-sm-3 col-md-3 control-label">用户IP信息：</label>
+		<div class="col-xs-3 col-sm-3 col-md-3">
+			<p class="form-control-static" th:text="${userlog.userIp}"></p>
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-xs-3 col-sm-3 col-md-3 control-label">操作时间：</label>
+		<div class="col-xs-3 col-sm-3 col-md-3">
+			<p class="form-control-static"
+				th:text="${#dates.format(userlog.createTime,'yyyy-MM-dd HH:mm:ss')}">
+			</p>
+		</div>
+		<label class="col-xs-3 col-sm-3 col-md-3 control-label">耗时：</label>
+		<div class="col-xs-3 col-sm-3 col-md-3">
+			<p class="form-control-static" th:text="${userlog.consumTime}"></p>
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-xs-3 col-sm-3 col-md-3 control-label">操作表单内容：</label>
+		<div class="col-xs-9 col-sm-9 col-md-9">
+			<p class="form-control-static" th:text="${userlog.formContent}"
+				style="word-wrap: break-word;"></p>
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-xs-3 col-sm-3 col-md-3 control-label">操作类型：</label>
+		<div class="col-xs-3 col-sm-3 col-md-3">
+			<p class="form-control-static" th:text="${userlog.operType}"></p>
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-xs-3 col-sm-3 col-md-3 control-label">操作描述：</label>
+		<div class="col-xs-9 col-sm-9 col-md-9">
+			<p class="form-control-static" th:text="${userlog.operDetail}"></p>
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-xs-3 col-sm-3 col-md-3 control-label">删除的数据：</label>
+		<div class="col-xs-9 col-sm-9 col-md-9">
+			<p class="form-control-static" th:text="${userlog.deleteData}"
+				style="word-wrap: break-word;"></p>
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-xs-3 col-sm-3 col-md-3 control-label">异常描述：</label>
+		<div class="col-xs-9 col-sm-9 col-md-9">
+			<p class="form-control-static" th:text="${userlog.errorDetail}"></p>
+		</div>
+	</div>
+
+</form>
+
+<script>
+	$('#datepicker').datetimepicker({
+		language : 'zh-CN',
+		format : "yyyy-mm-dd hh:ii:00",
+		startDate : "2018-03-10 10:00",
+		minuteStep : 10,
+		secondStep : 30,
+		maxView : 4,
+		todayBtn : true,
+		autoclose : true,
+	});
+</script>

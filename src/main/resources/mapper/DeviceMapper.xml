@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bupt.cardtest.dao.DeviceMapper">
+  <resultMap id="BaseResultMap" type="com.bupt.cardtest.model.bean.Device">
+    <id column="device_id" jdbcType="VARCHAR" property="deviceId" />
+    <result column="device_info" jdbcType="VARCHAR" property="deviceInfo" />
+    <result column="device_type" jdbcType="INTEGER" property="deviceType" />
+    <result column="lock_symbol" jdbcType="INTEGER" property="lockSymbol" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    device_id, device_info, device_type, lock_symbol
+  </sql>
+  <select id="selectByExample" parameterType="com.bupt.cardtest.model.bean.DeviceExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from device
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from device
+    where device_id = #{deviceId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from device
+    where device_id = #{deviceId,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.bupt.cardtest.model.bean.DeviceExample">
+    delete from device
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.bupt.cardtest.model.bean.Device">
+    insert into device (device_id, device_info, device_type, 
+      lock_symbol)
+    values (#{deviceId,jdbcType=VARCHAR}, #{deviceInfo,jdbcType=VARCHAR}, #{deviceType,jdbcType=INTEGER}, 
+      #{lockSymbol,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.bupt.cardtest.model.bean.Device">
+    insert into device
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="deviceId != null">
+        device_id,
+      </if>
+      <if test="deviceInfo != null">
+        device_info,
+      </if>
+      <if test="deviceType != null">
+        device_type,
+      </if>
+      <if test="lockSymbol != null">
+        lock_symbol,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="deviceId != null">
+        #{deviceId,jdbcType=VARCHAR},
+      </if>
+      <if test="deviceInfo != null">
+        #{deviceInfo,jdbcType=VARCHAR},
+      </if>
+      <if test="deviceType != null">
+        #{deviceType,jdbcType=INTEGER},
+      </if>
+      <if test="lockSymbol != null">
+        #{lockSymbol,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.bupt.cardtest.model.bean.DeviceExample" resultType="java.lang.Long">
+    select count(*) from device
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update device
+    <set>
+      <if test="record.deviceId != null">
+        device_id = #{record.deviceId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.deviceInfo != null">
+        device_info = #{record.deviceInfo,jdbcType=VARCHAR},
+      </if>
+      <if test="record.deviceType != null">
+        device_type = #{record.deviceType,jdbcType=INTEGER},
+      </if>
+      <if test="record.lockSymbol != null">
+        lock_symbol = #{record.lockSymbol,jdbcType=INTEGER},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update device
+    set device_id = #{record.deviceId,jdbcType=VARCHAR},
+      device_info = #{record.deviceInfo,jdbcType=VARCHAR},
+      device_type = #{record.deviceType,jdbcType=INTEGER},
+      lock_symbol = #{record.lockSymbol,jdbcType=INTEGER}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.bupt.cardtest.model.bean.Device">
+    update device
+    <set>
+      <if test="deviceInfo != null">
+        device_info = #{deviceInfo,jdbcType=VARCHAR},
+      </if>
+      <if test="deviceType != null">
+        device_type = #{deviceType,jdbcType=INTEGER},
+      </if>
+      <if test="lockSymbol != null">
+        lock_symbol = #{lockSymbol,jdbcType=INTEGER},
+      </if>
+    </set>
+    where device_id = #{deviceId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.bupt.cardtest.model.bean.Device">
+    update device
+    set device_info = #{deviceInfo,jdbcType=VARCHAR},
+      device_type = #{deviceType,jdbcType=INTEGER},
+      lock_symbol = #{lockSymbol,jdbcType=INTEGER}
+    where device_id = #{deviceId,jdbcType=VARCHAR}
+  </update>
+
+
+
+
+  <!--通过用户ID查找用户拥有的所有设备-->
+
+  <select id="dataGrid" parameterType="com.bupt.cardtest.model.pagebean.AdminDevicePage"
+          resultMap="BaseResultMap">
+    select
+    device.device_id,device.device_info,device.device_type,device.lock_symbol
+    from
+    device
+    INNER JOIN
+    admin_device
+    ON
+    device.device_id=admin_device.device_id
+    where 1=1
+    <if test="id!= null and id!=''">
+        and admin_device.admin_id=#{id}
+    </if>
+    <if test="deviceId!= null and deviceId!=''">
+      and device.device_id=#{deviceId}
+    </if>
+
+    order by
+    device.device_id
+
+  </select>
+
+
+
+  <select id="countDataGrid" parameterType="com.bupt.cardtest.model.pagebean.AdminDevicePage"
+          resultType="java.lang.Long">
+    select
+    count(*)
+    from
+    device
+    INNER JOIN
+    admin_device
+    ON
+    device.device_id=admin_device.device_id
+    where 1=1
+    <if test="id!=null and id!=''">
+      and admin_device.admin_id=#{id}
+    </if>
+    <if test="deviceId!= null and deviceId!= ''">
+      and device.device_id=#{deviceId}
+    </if>
+
+    order by
+    device.device_id
+  </select>
+</mapper>

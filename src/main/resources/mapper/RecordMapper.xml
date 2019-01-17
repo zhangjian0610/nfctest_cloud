@@ -1,0 +1,317 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bupt.cardtest.dao.RecordMapper">
+  <resultMap id="BaseResultMap" type="com.bupt.cardtest.model.bean.Record">
+    <id column="start" jdbcType="INTEGER" property="start" />
+    <id column="device_id" jdbcType="VARCHAR" property="deviceId" />
+    <id column="file_name" jdbcType="VARCHAR" property="fileName" />
+    <result column="end" jdbcType="INTEGER" property="end" />
+    <result column="src" jdbcType="VARCHAR" property="src" />
+    <result column="data" jdbcType="VARCHAR" property="data" />
+    <result column="crc" jdbcType="VARCHAR" property="crc" />
+    <result column="annotation" jdbcType="VARCHAR" property="annotation" />
+    <result column="sid" jdbcType="INTEGER" property="sid" />
+  </resultMap>
+  <resultMap id="pageResult" type="com.bupt.cardtest.model.pagebean.RecordPage">
+    <id column="start" jdbcType="INTEGER" property="start" />
+    <id column="device_id" jdbcType="VARCHAR" property="deviceId" />
+    <id column="file_name" jdbcType="VARCHAR" property="fileName" />
+    <result column="end" jdbcType="INTEGER" property="end" />
+    <result column="src" jdbcType="VARCHAR" property="src" />
+    <result column="data" jdbcType="VARCHAR" property="data" />
+    <result column="crc" jdbcType="VARCHAR" property="crc" />
+    <result column="annotation" jdbcType="VARCHAR" property="annotation" />
+    <result column="sid" jdbcType="INTEGER" property="sid" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    start, device_id, file_name, end, src, data, crc, annotation, sid
+  </sql>
+  <select id="selectByExample" parameterType="com.bupt.cardtest.model.bean.RecordExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from record
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="com.bupt.cardtest.model.bean.RecordKey" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from record
+    where start = #{start,jdbcType=INTEGER}
+      and device_id = #{deviceId,jdbcType=VARCHAR}
+      and file_name = #{fileName,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="com.bupt.cardtest.model.bean.RecordKey">
+    delete from record
+    where start = #{start,jdbcType=INTEGER}
+      and device_id = #{deviceId,jdbcType=VARCHAR}
+      and file_name = #{fileName,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.bupt.cardtest.model.bean.RecordExample">
+    delete from record
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.bupt.cardtest.model.bean.Record">
+    insert into record (start, device_id, file_name, 
+      end, src, data, crc, 
+      annotation, sid)
+    values (#{start,jdbcType=INTEGER}, #{deviceId,jdbcType=VARCHAR}, #{fileName,jdbcType=VARCHAR}, 
+      #{end,jdbcType=INTEGER}, #{src,jdbcType=VARCHAR}, #{data,jdbcType=VARCHAR}, #{crc,jdbcType=VARCHAR}, 
+      #{annotation,jdbcType=VARCHAR}, #{sid,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.bupt.cardtest.model.bean.Record">
+    insert into record
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="start != null">
+        start,
+      </if>
+      <if test="deviceId != null">
+        device_id,
+      </if>
+      <if test="fileName != null">
+        file_name,
+      </if>
+      <if test="end != null">
+        end,
+      </if>
+      <if test="src != null">
+        src,
+      </if>
+      <if test="data != null">
+        data,
+      </if>
+      <if test="crc != null">
+        crc,
+      </if>
+      <if test="annotation != null">
+        annotation,
+      </if>
+      <if test="sid != null">
+        sid,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="start != null">
+        #{start,jdbcType=INTEGER},
+      </if>
+      <if test="deviceId != null">
+        #{deviceId,jdbcType=VARCHAR},
+      </if>
+      <if test="fileName != null">
+        #{fileName,jdbcType=VARCHAR},
+      </if>
+      <if test="end != null">
+        #{end,jdbcType=INTEGER},
+      </if>
+      <if test="src != null">
+        #{src,jdbcType=VARCHAR},
+      </if>
+      <if test="data != null">
+        #{data,jdbcType=VARCHAR},
+      </if>
+      <if test="crc != null">
+        #{crc,jdbcType=VARCHAR},
+      </if>
+      <if test="annotation != null">
+        #{annotation,jdbcType=VARCHAR},
+      </if>
+      <if test="sid != null">
+        #{sid,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.bupt.cardtest.model.bean.RecordExample" resultType="java.lang.Long">
+    select count(*) from record
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update record
+    <set>
+      <if test="record.start != null">
+        start = #{record.start,jdbcType=INTEGER},
+      </if>
+      <if test="record.deviceId != null">
+        device_id = #{record.deviceId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.fileName != null">
+        file_name = #{record.fileName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.end != null">
+        end = #{record.end,jdbcType=INTEGER},
+      </if>
+      <if test="record.src != null">
+        src = #{record.src,jdbcType=VARCHAR},
+      </if>
+      <if test="record.data != null">
+        data = #{record.data,jdbcType=VARCHAR},
+      </if>
+      <if test="record.crc != null">
+        crc = #{record.crc,jdbcType=VARCHAR},
+      </if>
+      <if test="record.annotation != null">
+        annotation = #{record.annotation,jdbcType=VARCHAR},
+      </if>
+      <if test="record.sid != null">
+        sid = #{record.sid,jdbcType=INTEGER},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update record
+    set start = #{record.start,jdbcType=INTEGER},
+      device_id = #{record.deviceId,jdbcType=VARCHAR},
+      file_name = #{record.fileName,jdbcType=VARCHAR},
+      end = #{record.end,jdbcType=INTEGER},
+      src = #{record.src,jdbcType=VARCHAR},
+      data = #{record.data,jdbcType=VARCHAR},
+      crc = #{record.crc,jdbcType=VARCHAR},
+      annotation = #{record.annotation,jdbcType=VARCHAR},
+      sid = #{record.sid,jdbcType=INTEGER}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.bupt.cardtest.model.bean.Record">
+    update record
+    <set>
+      <if test="end != null">
+        end = #{end,jdbcType=INTEGER},
+      </if>
+      <if test="src != null">
+        src = #{src,jdbcType=VARCHAR},
+      </if>
+      <if test="data != null">
+        data = #{data,jdbcType=VARCHAR},
+      </if>
+      <if test="crc != null">
+        crc = #{crc,jdbcType=VARCHAR},
+      </if>
+      <if test="annotation != null">
+        annotation = #{annotation,jdbcType=VARCHAR},
+      </if>
+      <if test="sid != null">
+        sid = #{sid,jdbcType=INTEGER},
+      </if>
+    </set>
+    where start = #{start,jdbcType=INTEGER}
+      and device_id = #{deviceId,jdbcType=VARCHAR}
+      and file_name = #{fileName,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.bupt.cardtest.model.bean.Record">
+    update record
+    set end = #{end,jdbcType=INTEGER},
+      src = #{src,jdbcType=VARCHAR},
+      data = #{data,jdbcType=VARCHAR},
+      crc = #{crc,jdbcType=VARCHAR},
+      annotation = #{annotation,jdbcType=VARCHAR},
+      sid = #{sid,jdbcType=INTEGER}
+    where start = #{start,jdbcType=INTEGER}
+      and device_id = #{deviceId,jdbcType=VARCHAR}
+      and file_name = #{fileName,jdbcType=VARCHAR}
+  </update>
+
+
+
+  <select id="dataGrid" parameterType="com.bupt.cardtest.model.bean.Record"
+          resultMap="pageResult">
+
+    SELECT
+    device_id,file_name,start,end,src,data,crc,annotation,sid
+    FROM
+    record
+    WHERE 1=1
+    <if test="fileName!= null and fileName!= ''">
+      and file_name=#{fileName}
+    </if>
+    ORDER BY
+    sid
+
+  </select>
+
+  <select id="countDataGrid" parameterType="com.bupt.cardtest.model.bean.Record"
+          resultType="java.lang.Long">
+    select
+    count(*)
+    from
+    record
+    where 1=1
+    <if test="fileName!= null and fileName!= ''">
+      and file_name=#{fileName}
+    </if>
+    order by
+    sid
+
+  </select>
+</mapper>

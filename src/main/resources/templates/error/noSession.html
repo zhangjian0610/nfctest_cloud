@@ -1,0 +1,8 @@
+if (self != top)
+{
+	parent.swal({ title:"",text: "您没有登录或登录已超时，请重新登录", type: "warning", confirmButtonText: "确定",allowOutsideClick:false },function(){ window.parent.location.href =getRootPath_web(); });
+}
+else
+{
+	swal({ title:"",text: "您没有登录或登录已超时，请重新登录", type: "warning", confirmButtonText: "确定",allowOutsideClick:false },function(){ window.location.href =getRootPath_web(); });
+}

@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head th:include="/head">
+</head>
+
+<body style="background-color: #F5F5F5; width: 100%">
+	<div class="container-fluid">
+		<div class="row">
+			<div class="panel-body" style="padding: 0px;">
+				<div id="toolbar">
+					<div class="columns-left btn-group pull-left">
+						<button id="btn_add" type="button" class="btn btn-default">
+							<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>新增
+						</button>
+					</div>
+				</div>
+			</div>
+			<table id="bootstrap-table" class="table table-striped" style="word-wrap: break-word; word-break: break-all;"></table>
+		</div>
+	</div>
+
+	<div th:include="/jslib::jslib"></div>
+	<script type="text/javascript">
+		var $table = $('#bootstrap-table');
+		$()
+				.ready(
+						function() {
+							$("#toolbar")
+									.on(
+											"click",
+											"#btn_add",
+											function() {
+												$
+														.ajax({
+															url : getRootPath_web()
+																	+ '/roleController/addPage',
+															type : 'post',
+															cache : false,
+															//超时时间设置，单位毫秒
+															success : function(
+																	data) {
+																parent.BootstrapDialog
+																		.show({
+																			id : 'userAdd',
+																			title : '新增角色',
+																			message : $(
+																					"<div></div>")
+																					.html(
+																							data),
+																			type : BootstrapDialog.TYPE_PRIMARY,
+																			closable : false,
+																			buttons : [
+																					{
+																						label : '添加',
+																						icon : ' glyphicon glyphicon-ok',
+																						cssClass : 'btn-success',
+																						action : function(
+																								dialog) {
+																							parent.BootstrapDialog.table = $table;
+																							parent.BootstrapDialog.dialog = dialog;
+																							dialog
+																									.getModalBody()
+																									.find(
+																											"form")
+																									.submit();
+																						}
+																					},
+																					{
+																						id : 'cancel',
+																						label : '取消',
+																						icon : 'glyphicon glyphicon-remove',
+																						cssClass : 'btn-danger',
+																						action : function(
+																								dialog) {
+																							dialog
+																									.close();
+																						}
+																					} ]
+																		});
+															},
+															error : function(
+																	data) {
+																ajaxDialogError(data);
+															}
+														});
+											});
+							function operateFormatter(value, row, index) {
+								return [
+										'<a rel="tooltip" id="edit"   title="修改"  class="btn btn-simple btn-warning btn-icon table-action" href="javascript:void(0)">',
+										'<i class="fa fa-edit"></i>',
+										'</a>',
+										'<a rel="tooltip" id="remove" title="删除" class="btn btn-simple btn-danger btn-icon table-action" href="javascript:void(0)">',
+										'<i class="fa fa-remove"></i>', '</a>' ]
+										.join('');
+							}
+							window.operateEvents = {
+								'click #edit' : function(e, value, row, index) {
+
+									$
+											.ajax({
+												url : getRootPath_web()
+														+ '/roleController/editPage?id='
+														+ row.id,
+												type : 'post',
+												cache : false,
+												//超时时间设置，单位毫秒
+												success : function(data) {
+													parent.BootstrapDialog
+															.show({
+																id : 'userInfoEdit',
+																title : '修改角色信息',
+																message : $(
+																		"<div></div>")
+																		.html(
+																				data),
+																type : BootstrapDialog.TYPE_PRIMARY,
+																closable : false,
+																buttons : [
+																		{
+																			label : '修改',
+																			icon : ' glyphicon glyphicon-ok',
+																			cssClass : 'btn-success',
+																			action : function(
+																					dialog) {
+																				parent.BootstrapDialog.table = $table;
+																				parent.BootstrapDialog.dialog = dialog;
+																				dialog
+																						.getModalBody()
+																						.find(
+																								"form")
+																						.submit();
+																			}
+																		},
+																		{
+																			id : 'cancel',
+																			label : '取消',
+																			icon : 'glyphicon glyphicon-remove',
+																			cssClass : 'btn-danger',
+																			action : function(
+																					dialog) {
+																				dialog
+																						.close();
+																			}
+																		} ],
+															});
+
+												},
+												error : function(data) {
+													ajaxDialogError(data);
+												}
+											});
+								},
+								'click #remove' : function(e, value, row, index) {
+
+									parent
+											.swal(
+													{
+														title : "您确定要删除吗？",
+														type : "warning",
+														showCancelButton : true,
+														closeOnConfirm : false,
+														confirmButtonText : "确定",
+														cancelButtonText : "取消",
+														showLoaderOnConfirm : true,
+													},
+													function() {
+														$
+																.ajax(
+																		{
+																			url : getRootPath_web()
+																					+ '/roleController/delete',
+																			type : "post",
+																			data : {
+																				"id" : row.id
+																			}
+																		})
+																.done(
+																		function(
+																				data) {
+																			if (data.success) {
+
+																				$table
+																						.bootstrapTable(
+																								'remove',
+																								{
+																									field : 'id',
+																									values : [ row.id ]
+																								});
+																				parent
+																						.swal(
+																								"操作成功!",
+																								data.msg,
+																								"success");
+																			} else {
+																				parent
+																						.swal(
+																								"操作失败!",
+																								data.msg,
+																								"error");
+																			}
+																		})
+																.error(
+																		function(
+																				data) {
+																			parent
+																					.swal(
+																							"操作失败!",
+																							data.msg,
+																							"error");
+																		});
+													});
+								}
+							};
+							//搜索
+							$("#toolbar").on("click", "#btn_search",
+									function() {
+										$table.bootstrapTable('refresh');
+									});
+							//清空
+							$("#toolbar").on(
+									"click",
+									"#btn_empty",
+									function() {
+										$("#name").val(""), $("#datepicker")
+												.val(""), $table
+												.bootstrapTable('refresh');
+									});
+							function queryParams(params) {
+								var temp = { //这里的键的名字和控制器的变量名必须一直，这边改动，控制器也需要改成一样的
+									rows : params.limit, //页面大小
+									page : (params.offset / params.limit) + 1,//页码
+									order : params.order, //asc desc
+									sort : params.sort,//排序列名  
+									name : $("#name").val(),
+									modifydatetimeStart : $("#datepicker")
+											.val()
+								//排位命令（desc，asc） 
+								};
+								return temp;
+							}
+							$table
+									.bootstrapTable({
+										url : rootPath
+												+ "/roleController/treeGrid",//请求后台的URL（*）  
+										method : 'post', //请求方式（*）  
+										toolbar : "#toolbar",
+										uniqueId : "id", //每一行的唯一标识，一般为主键列  
+										//striped : true, //是否显示行间隔色  
+										cache : false, //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）  
+										pagination : true, //是否显示分页（*） 
+										contentType : 'application/x-www-form-urlencoded; charset=UTF-8',//这个需要增加上 否则控件默认使用application/json
+										sortOrder : "asc", //排序方式  
+										searchAlign : 'left',
+										showRefresh : true, //是否显示刷新按钮  
+										clickToSelect : true, //是否启用点击选中行  
+										height : $(window).height(),
+										columns : [
+												{
+													field : 'name',
+													title : '角色名称',
+													width:100
+												},
+												{
+													field : 'resourceNames',
+													title : '拥有资源',
+													width:500
+												},
+												{
+													field : 'remark',
+													title : '备注',
+													width:200
+												},
+												{
+													title : '操作',
+													formatter : operateFormatter,
+													events : operateEvents,
+													width:100
+												} ],
+
+										icons : {
+											refresh : 'fa fa-refresh'
+										},
+										formatShowingRows : function(pageFrom,
+												pageTo, totalRows) {
+											return "共" + totalRows + "条记录";
+										},
+										onLoadSuccess : function() {
+											$('[rel="tooltip"]').tooltip();
+										},
+									});
+							$(window).resize(function() {
+								$table.bootstrapTable('resetView');
+
+							});
+						});
+	</script>
+</body>
+</html>

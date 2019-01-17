@@ -1,0 +1,220 @@
+<style>
+.ztreepanel {
+	overflow: auto;
+	z-index: 1000;
+	padding: 5px 0px 0px 10px;
+	margin: 2px 0 0;
+	font-size: 14px;
+	float:left;
+	text-align: left;
+	list-style: none;
+	background-color: #fff;
+	-webkit-background-clip: padding-box;
+	background-clip: padding-box;
+	border: 1px solid #ccc;
+	border: 1px solid rgba(0, 0, 0, .15);
+	border-radius: 4px;
+	-webkit-box-shadow: 0 6px 12px rgba(0, 0, 0, .175);
+	box-shadow: 0 6px 12px rgba(0, 0, 0, .175);
+}
+
+.ztree li {
+	margin: 0;
+	list-style: none;
+	line-height: 14px;
+	text-align: left;
+	white-space: nowrap;
+	outline: 0
+}
+
+.ztree li a {
+	height: 30px;
+	line-height: 30px;
+	text-decoration: none
+}
+
+.ztree li a:hover {
+	text-decoration: none;
+	font-weight: bold;
+	font-size: 16px;
+}
+
+.ztree li a.curSelectedNode {
+	height: 28px;
+	line-height: 28px;
+}
+
+.ztree li span.button.switch {
+	line-height: 28px;
+	height: 28px;
+}
+
+.ztree li span.button.noline_close {
+	background: none;
+}
+
+.ztree li span.button.noline_open {
+	background: none;
+}
+
+.ztree li span {
+	font-size: 15px;
+}
+</style>
+
+<script type="text/javascript" th:inline="javascript">
+//<![CDATA[
+$("#formRoleEdit").validate({
+					submitHandler : function(form) {
+						parent.BootstrapDialog.dialog
+								.enableButtons(false);
+						gettreevalue();
+						$('#formRoleEdit')
+								.ajaxSubmit(
+										{
+											url : getRootPath_web()
+													+ '/roleController/edit',
+											success : function(
+													data) {
+												if (data.success) {
+													parent.BootstrapDialog.dialog
+															.close();
+													parent.BootstrapDialog.table
+															.bootstrapTable('refresh');
+													parent.swal(
+															'',
+															data.msg,
+															'success')
+												} else {
+													parent.swal(
+															'',
+															data.msg,
+															'error')
+															parent.BootstrapDialog.dialog
+															.enableButtons(true);
+												}
+											},
+										});
+					}
+				});
+	var setting2 = {
+		async : {
+			enable : true,
+			url : getRootPath_web()
+			+'/resourceController/allTree',
+			type : 'get',
+		},
+		check : {
+			enable : true,
+			chkStyle : "checkbox", //复选框
+			chkboxType : {
+				"Y" : "",
+				"N" : ""
+			}
+		},
+
+		view : {
+			dblClickExpand : false,
+			showIcon : false,
+			showLine : false,
+			selectedMulti : false,
+			autoCancelSelected : false
+
+		},
+		data : {
+			simpleData : {
+				enable : true,
+				idKey : "id", // id编号命名     
+				pIdKey : "pid", // 父id编号命名      
+				rootId : 0
+			},
+			key : {
+				url : 'xxx',//简单报文数据中存在url属性将自动转为链接跳转，设置别名，避免跳转。
+				name : 'text'
+			}
+		},
+		callback : {
+			onClick : onClick2,
+			onAsyncSuccess : asyncSuccess,
+		}
+
+		
+	};
+
+	function asyncSuccess() {
+		var zTree1 = $.fn.zTree.getZTreeObj("treeDemo2");	
+		zTree1.expandAll(true);
+		treeObj=$.fn.zTree.getZTreeObj("treeDemo2");
+		var s =[[${role.resourceIds}]];
+		if(s!=null)
+		{
+			var bs=s.split(",");
+			for(var i in bs){
+				var node=treeObj.getNodeByParam("id", bs[i])
+				node.checked = true;
+				treeObj.checkNode(node, true, true);
+			}
+		}
+	};
+
+	function onClick2(e, treeId, treeNode) {
+		var zTree1 = $.fn.zTree.getZTreeObj("treeDemo2");
+		zTree1.checkNode(treeNode, true, true);
+	};
+
+	function onBodyDown(event) {
+		if (!(event.target.id == "menuBtn" || event.target.id == "menuContent" || $(
+				event.target).parents("#menuContent").length > 0)) {
+			hideMenu();
+		};
+	};
+	function gettreevalue() {
+		var zTree3 = $.fn.zTree.getZTreeObj("treeDemo2"), nodes = zTree3
+				.getCheckedNodes(), v = "";
+		zTree3.setc
+		for (var i in nodes) {
+			v += nodes[i].id + ",";
+		}
+		if (v.length > 0)
+			v = v.substring(0, v.length - 1);
+		$("#resourceIds").val(v);
+	};
+		$.fn.zTree.init($("#treeDemo2"), setting2);
+	
+	function checkAll(flag)
+	{
+		var treeObj = $.fn.zTree.getZTreeObj("treeDemo2");
+		treeObj.checkAllNodes(flag);
+		return false;
+	}
+			
+	//]]>
+</script>
+<form class="form-horizontal" id="formRoleEdit" method="post">
+	<div class="form-group">
+		<label class="col-md-2 control-label">角色名称</label>
+		<div class="col-md-9">
+			<input style="display: none;" name="id" th:value="${role.id}" /> <input name="name" maxlength="10" type="text" placeholder="请输入用户名" th:value="${role.name}" class="form-control" value="" autocomplete="off"
+				required="required" />
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-md-2 control-label">备注</label>
+		<div class="col-md-9">
+			<textarea name="remark" maxlength="150" class="form-control" th:value="${role.remark}" th:text="${role.remark}"></textarea>
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-md-2 control-label">权限集</label>
+		<div class="col-md-9">
+			<input style="display: none;" name="resourceIds" id="resourceIds" />
+			<div id="menuContent" class="ztreepanel" style="height: 240px; width: 280px; overflow: auto;">
+				<ul id="treeDemo2" class="ztree" style="margin-top: 0; padding: 0px;"></ul>
+			</div>
+			<div style="float:right">
+				<a class="btn btn-success" onclick="checkAll(true)">全部选中</a><br /><br /> <a class="btn btn-danger" onclick="checkAll(false)">全部取消</a>
+			</div>
+
+		</div>
+	</div>
+</form>

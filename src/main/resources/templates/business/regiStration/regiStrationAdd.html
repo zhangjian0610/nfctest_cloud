@@ -1,0 +1,471 @@
+<style>
+.file {
+	position: relative;
+	display: inline-block;
+	background: #D0EEFF;
+	border: 1px solid #99D3F5;
+	border-radius: 4px;
+	padding: 4px 12px;
+	overflow: hidden;
+	color: #1E88C7;
+	text-decoration: none;
+	text-indent: 0;
+	line-height: 20px;
+}
+
+.file input {
+	position: absolute;
+	font-size: 100px;
+	right: 0;
+	top: 0;
+	opacity: 0;
+}
+
+.file:hover {
+	background: #AADFFD;
+	border-color: #78C3F3;
+	color: #004974;
+	text-decoration: none;
+}
+</style>
+
+<form class="form-horizontal" id="form" method="post">
+	<!-- 	<div class="form-group">
+		<label class="col-md-3 control-label">赛区标识</label>
+		<div class="col-md-8">
+			<input name="divisionId" type="text" placeholder="请输入赛区标识" class="form-control" value="" autocomplete="off" required="required" />
+		</div>
+	</div> -->
+	<div class="form-group">
+		<label class="col-md-3 control-label">业务号码</label>
+		<div class="col-md-8">
+			<input name="userId" id="userId" type="text" required="required"
+				placeholder="请输入业务号码" class="form-control" value="" maxlength="45"
+				phone="phone" />
+				<input type="hidden" name="userIdbak" id="userIdbak" />
+				<input type="hidden" name="userIdbak2" id="userIdbak2"/>
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-md-3 control-label">用户姓名</label>
+		<div class="col-md-8">
+			<input name="userName" id="userName" type="text" required="required"
+				placeholder="请输入用户姓名" class="form-control " value="" maxlength="20" />
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-md-3 control-label">所属省份</label>
+		<div class="col-md-8">
+			<select class="form-control " style="height: 34px"
+				required="required" placeholder="请选择所属省份" name="provinceId"
+				id="provinceId" onchange="changeValue()">
+				<option value="">-选择所属省份-</option>
+				<option th:each="contest : ${province}"
+					th:value="${contest.provinceId}" th:text="${contest.provinceName}"></option>
+			</select>
+		</div>
+	</div>
+
+	<div class="form-group">
+		<label class="col-md-3 control-label">所属赛区</label>
+		<div class="col-md-8">
+			<select class="form-control " style="height: 34px"
+				required="required" placeholder="请选择所属赛区" name="divisionId"
+				onchange="getGroup();" id="divisionId">
+				<option value="">-选择所属赛区-</option>
+
+			</select>
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-md-3 control-label">报名类型</label>
+		<div class="col-md-8">
+			<select class="form-control " style="height: 34px"
+				required="required" placeholder="请选择所属赛区" name="regType"
+				onchange="childer();" id="regType">
+				<option value="1">-本人报名-</option>
+				<option value="2">-孩子报名-</option>
+
+			</select>
+		</div>
+	</div>
+	<div id="childer" style="display: none;">
+		<div class="form-group">
+			<label class="col-md-3 control-label">孩子姓名</label>
+			<div class="col-md-8">
+				<input name="childrenName" id="childrenName" type="text"
+					required="required" placeholder="请输入孩子姓名" class="form-control "
+					value="" maxlength="20" />
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-md-3 control-label">与孩子关系</label>
+			<div class="col-md-8">
+				<select class="form-control " style="height: 34px"
+					required="required" placeholder="请选择所属赛区" name="childrenType"
+					id="childrenType">
+					<option value="">-请选择与孩子关系-</option>
+					<option value="1">-父母-</option>
+					<option value="2">-亲戚-</option>
+					<option value="3">-其他-</option>
+
+				</select>
+			</div>
+		</div>
+
+	</div>
+	<div class="form-group">
+		<label class="col-md-3 control-label">报名者证件类型</label>
+		<div class="col-md-8">
+			<select class="form-control" onchange="cardType();"
+				style="height: 34px" required="required" placeholder="请选择所属赛区"
+				name="userCardType" id="userCardType">
+				<option value="1">-身份证-</option>
+				<option value="2">-其他证件-</option>
+			</select>
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-md-3 control-label">报名者证件号码</label>
+		<div class="col-md-8">
+			<input onchange="userCardNoBlur();" name="userCardNo" id="userCardNo"
+				type="text" required="required" placeholder="请输入证件号码"
+				class="form-control " value="" maxlength="30" />
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-md-3 control-label">报名者证件照片</label>
+		<div class="col-md-8">
+			<input name="file1" id="file1" type="file" required="required"
+				onchange="checkFileExt('file1',this.value);" placeholder="请上传证件照片"
+				class="file " value="" />
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-md-3 control-label">报名者性别</label>
+		<div class="col-md-8">
+			男<input type="radio" name="userSex" value="1" onclick="getGroup();" />
+			女<input type="radio" name="userSex" value="0" onclick="getGroup();" />
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-md-3 control-label">报名者生日</label>
+		<div class="col-md-8">
+			<input name="userBirthday" id="userBirthday" type="text"
+				placeholder="请输入报名者生日" class="form-control datepicker" value=""
+				required="required" readonly="readonly" onchange="getGroup();" />
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-md-3 control-label">报名者联系地址</label>
+		<div class="col-md-8">
+			<input name="userAddress" id="userAddress" type="text"
+				required="required" placeholder="请输入联系地址" class="form-control "
+				value="" maxlength="80" />
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-md-3 control-label">报名者联系方式</label>
+		<div class="col-md-8">
+			<input name="userPhone" id="userPhone" type="text"
+				required="required" placeholder="请输入联系方式" class="form-control "
+				isTelephone="true" value="" maxlength="11" />
+		</div>
+	</div>
+	<div id="group"></div>
+	<div id="user"></div>
+
+
+</form>
+
+<script>
+	//<![CDATA[
+	function cardType() {
+		$("#userCardNo").val("");
+		$("input[name='userSex']").get(0).checked = false;
+		$("input[name='userSex']").get(1).checked = false;
+		$("#userBirthday").val("");
+		$("#file1").val("");
+		getGroup();
+	}
+	function userCardNoBlur() {
+		$("#userIdbak").val("");
+		var idCard = $("#userCardNo").val();
+		var userCardType = $("#userCardType").val();
+		$.ajax({
+			async : false,
+			url : getRootPath_web() + '/regiStrationController/getInfoByCard',
+			data : {
+				"userCardNo" : idCard,
+				"userCardType" : userCardType
+			},
+			type : "post",
+			success : function(date) {
+				if (date.success) {
+					$("#userAddress").val("");
+					$("#userPhone").val("");
+					$("#userAddress").val(date.obj.userAddress);
+					$("#userPhone").val(date.obj.userPhone);
+					$("#userIdbak").val(date.obj.userId);
+				}
+			}
+		})
+		var birthday = "";
+		if (idCard != null && idCard != "") {
+			if (userCardType == 1) {
+
+				if (!(idCard.length == 15 || idCard.length == 18)) {
+					parent.swal('', "请输入正确的证件号码", 'error');
+					getGroup();
+
+				}
+				if (idCard.length == 15) {
+					birthday = "19" + idCard.substr(6, 6);
+					if (idCard.substr(14, 1) % 2 == 1) {
+						$("input[name='userSex']").get(0).checked = true;
+					} else {
+						$("input[name='userSex']").get(1).checked = true;
+					}
+				} else if (idCard.length == 18) {
+					birthday = idCard.substr(6, 8);
+					if (idCard.substr(16, 1) % 2 == 1) {
+						$("input[name='userSex']").get(0).checked = true;
+					} else {
+						$("input[name='userSex']").get(1).checked = true;
+					}
+
+				}
+				birthday = birthday.replace(/(.{4})(.{2})/, "$1-$2-");
+				$("#userBirthday").val(birthday);
+				getGroup();
+			}
+		}
+	}
+	function cardType2() {
+		$("#userCardNo2").val("");
+		$("input[name='userSex2']").get(0).checked = false;
+		$("input[name='userSex2']").get(1).checked = false;
+		$("#userBirthday2").val("");
+		$("#file2").val("");
+	}
+	function userCardNoBlur2() {
+		$("#userIdbak2").val("");
+		var idCard = $("#userCardNo2").val();
+		var userCardType = $("#userCardType2").val();
+		$.ajax({
+			async : false,
+			url : getRootPath_web() + '/regiStrationController/getInfoByCard',
+			data : {
+				"userCardNo" : idCard,
+				"userCardType" : userCardType
+			},
+			type : "post",
+			success : function(date) {
+				if (date.success) {
+					$("#userAddress2").val("");
+					$("#userPhone2").val("");
+					$("#userAddress2").val(date.obj.userAddress);
+					$("#userPhone2").val(date.obj.userPhone);
+					$("#userIdbak2").val(date.obj.userId);
+				}
+			}
+		})
+		var birthday = "";
+		if (idCard != null && idCard != "") {
+			if (userCardType == 1) {
+				if (!(idCard.length == 15 || idCard.length == 18)) {
+					parent.swal('', "请输入正确的证件号码", 'error')
+				}
+				if (idCard.length == 15) {
+					birthday = "19" + idCard.substr(6, 6);
+					if (idCard.substr(14, 1) % 2 == 1) {
+						$("input[name='userSex2']").get(0).checked = true;
+					} else {
+						$("input[name='userSex2']").get(1).checked = true;
+					}
+				} else if (idCard.length == 18) {
+					birthday = idCard.substr(6, 8);
+					if (idCard.substr(16, 1) % 2 == 1) {
+						$("input[name='userSex2']").get(0).checked = true;
+					} else {
+						$("input[name='userSex2']").get(1).checked = true;
+					}
+
+				}
+				birthday = birthday.replace(/(.{4})(.{2})/, "$1-$2-");
+				$("#userBirthday2").val(birthday);
+			}
+		}
+	}
+
+	$(document).ready(function() {
+		$('#userBirthday').datetimepicker({
+			language : 'zh-CN',
+			format : "yyyy-mm-dd",
+			minView : 2,
+			autoclose : 1,
+			startView : 3,
+			pickerPosition : 'top-right',
+		});
+	});
+	function getGroup() {
+		$("#user").html("");
+		var divisionId = $("#divisionId").val();
+		var userBirthday = $("#userBirthday").val();
+		var radio = document.getElementsByName("");
+		var radioInfo = $('input[name="userSex"]:checked').val();
+		if (!divisionId || !userBirthday || !radioInfo) {
+			var html = '<span  style="    padding: 1px 9px;"    class="form-control" name="groupId"  required="required"    readonly="readonly"  > 没有符合条件小组</span>';
+			$("#groupInfo").html(html);
+			return;
+		} else {
+			$
+					.ajax({
+						async : false,
+						url : getRootPath_web()
+								+ '/regiStrationController/getGroup',
+						data : {
+							"divisionId" : divisionId,
+							"userBirthday" : userBirthday,
+							"userSex" : radioInfo
+						},
+						type : "post",
+						success : function(date) {
+							var html = '<div class="form-group"> <label class="col-md-3 control-label">选择小组</label> <div class="col-md-8" id="groupInfo"></div> </div>';
+							$("#group").html(html);
+							html = '';
+							$
+									.each(
+											date.obj,
+											function(i, value) {
+												var page = this.page;
+												var stylecss = '';
+												var style = '';
+												if (page != -1) {
+													style = ' disabled="disabled"  ';
+													stylecss = ' style="color:#d0d0d0;"  ';
+												}
+												html += '<div '+stylecss+'><input type="radio" name="groupId"  required="required" '
+														+ style
+														+ ' value="'
+														+ this.groupId
+														+ '" onclick="getUsers(\''
+														+ this.groupType
+														+ '\');" /> '
+														+ this.groupName
+														+ '</div>';
+											});
+							if (!html) {
+								html += '<span   style="    padding: 1px 9px;"  class="form-control" name="groupId"  required="required"    readonly="readonly"  > 没有符合条件小组</span>';
+							}
+							$("#groupInfo").html(html);
+
+						}
+					})
+		}
+	}
+	function getUsers(type) {
+		if (type == 1) {
+			$("#user").html("");
+			return;
+		}
+		var html = '<div class="form-group"> <label class="col-md-3 control-label">搭档业务号码</label> <div class="col-md-8"> <input name="userId2" isMobile="true"  id="userId2" type="text" required="required" placeholder="请输入搭档业务号码" class="form-control" value="" maxlength="20" phone="phone" /> </div> </div> <div class="form-group"> <label class="col-md-3 control-label">搭档姓名</label> <div class="col-md-8"> <input name="userName2" id="userName2" type="text" required="required" placeholder="请输入搭档姓名" class="form-control " value="" maxlength="20" /> </div> </div> <div class="form-group"> <label class="col-md-3 control-label">搭档证件类型</label> <div class="col-md-8"> <select class="form-control " onchange="cardType2();" style="height: 34px" required="required" placeholder="请选择所属赛区" name="userCardType2" id="userCardType2"> <option value="1">-身份证-</option> <option value="2">-其他证件-</option> </select> </div> </div> <div class="form-group"> <label class="col-md-3 control-label">搭档证件号码</label> <div class="col-md-8"> <input onchange="userCardNoBlur2();" name="userCardNo2" id="userCardNo2" type="text" required="required" placeholder="请输入证件号码" class="form-control " value="" maxlength="30" /> </div> </div> <div class="form-group"> <label class="col-md-3 control-label">搭档证件照片</label> <div class="col-md-8"> <input name="file2" onchange="checkFileExt(\'file2\',this.value);" id="file2" type="file" required="required" placeholder="请上传证件照片" class="file" value=""  /> </div> </div> <div class="form-group"> <label class="col-md-3 control-label">搭档性别</label> <div class="col-md-8"> 男<input type="radio" name="userSex2" checked="checked" value="1" /> 女<input type="radio" name="userSex2" value="0" /> </div> </div> <div class="form-group"> <label class="col-md-3 control-label">搭档生日</label> <div class="col-md-8"> <input name="userBirthday2" id="userBirthday2" type="text" placeholder="请输入搭档生日" class="form-control datepicker" value="" required="required" readonly="readonly" /> </div> </div> <div class="form-group"> <label class="col-md-3 control-label">搭档联系地址</label> <div class="col-md-8"> <input name="userAddress2" id="userAddress2" type="text" required="required" placeholder="请输入搭档联系地址" class="form-control " value="" maxlength="80" /> </div> </div> <div class="form-group"> <label class="col-md-3 control-label">搭档联系方式</label> <div class="col-md-8"> <input name="userPhone2" id="userPhone2" type="text"  isTelephone="true" required="required" placeholder="请输入搭档联系方式" class="form-control " value="" maxlength="11" /> </div> </div>';
+		$("#user").html(html);
+		$('#userBirthday2').datetimepicker({
+			language : 'zh-CN',
+			format : "yyyy-mm-dd",
+			minView : 2,
+			autoclose : 1,
+			startView : 3,
+			pickerPosition : 'top-right',
+		});
+	}
+
+	function childer() {
+		var regType = $("#regType").val();
+		if (regType == 1) {
+			$("#childer").hide();
+
+		} else {
+			$("#childer").show();
+
+		}
+	}
+	function changeValue() {
+		 getGroup();
+		var provinceId = $("#provinceId").val();
+		$
+				.ajax({
+					url : getRootPath_web()
+							+ '/regiStrationController/getDivisionList',
+					data : {
+						"provinceId" : provinceId
+					},
+					type : "post",
+					success : function(date) {
+						var html = '<option value= "" id="0divisiona">-选择所属赛区-</option>';
+						$.each(date, function(i, value) {
+							html += '<option value= "'+this.divisionId+'">'
+									+ this.divisionName + '</option>';
+						});
+						$("#divisionId").html(html);
+
+					}
+				})
+	}
+
+	$("#form").validate({
+
+		errorPlacement : function(error, element) {
+			if (element.is(':radio') || element.is(':checkbox'))
+				error.insertAfter(element.parent());
+			else
+				error.insertAfter(element);
+		},
+		submitHandler : function(form) {
+			parent.BootstrapDialog.dialog.enableButtons(false);
+			$('#form').ajaxSubmit({
+				url : getRootPath_web() + '/regiStrationController/add',
+				success : function(data) {
+					if (data.success) {
+						parent.BootstrapDialog.dialog.close();
+						parent.BootstrapDialog.table.bootstrapTable('refresh');
+						parent.swal('', data.msg, 'success')
+					} else {
+						parent.BootstrapDialog.dialog.enableButtons(true);
+						parent.swal('', data.msg, 'error')
+					}
+				},
+			});
+		}
+	});
+
+	function checkFileExt(id, filename) {
+		if (!filename) {
+			return;
+		}
+		filename = filename.toUpperCase();
+		var flag = false; //状态
+		var arr = [ "JPG", "PNG", "GIF", "BMP" ];
+		//取出上传文件的扩展名
+		var index = filename.lastIndexOf(".");
+		var ext = filename.substr(index + 1);
+		//循环比较
+
+		for ( var i in arr) {
+			if (ext == arr[i]) {
+				flag = true; //一旦找到合适的，立即退出循环
+				break;
+			}
+		}
+
+		//条件判断
+		if (!flag) {
+			$("#" + id + "").val("");
+			parent.swal('', '证件照片格式不正确', 'error');
+		} else {
+
+		}
+	}
+	//]]>
+</script>

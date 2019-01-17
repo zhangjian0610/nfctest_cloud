@@ -1,0 +1,287 @@
+<form class="form-horizontal" id="form" method="post"
+	enctype="multipart/form-data">
+	<div class="form-group">
+		<label class="col-md-3 control-label">业务号码</label>
+		<div class="col-md-8">
+			<input name="userId" type="hidden" placeholder="请输入业务号码"
+				class="form-control" th:value="${userInfo.userId}"
+				autocomplete="off" readonly="readonly" required="required" /> <input
+				name="dataVerFlag" type="hidden" class="form-control"
+				th:value="${userInfo.dataVerFlag}" autocomplete="off"
+				readonly="readonly" required="required" /> <label
+				class="control-label" th:text="${userInfo.userId}"></label>
+		</div>
+	</div>
+
+	<div class="form-group">
+		<label class="col-md-3 control-label">业务类型</label>
+		<div class="col-md-8">
+			<select class="form-control " name="userType" disabled="disabled">
+				<option value="1" th:selected="${userInfo.userType==1}">手机号</option>
+				<option value="2" th:selected="${userInfo.userType==2}">固话</option>
+				<option value="3" th:selected="${userInfo.userType==3}">宽带账号</option>
+				<option value="4" th:selected="${userInfo.userType==4}">LAN账号</option>
+				<option value="5" th:selected="${userInfo.userType==5}">代报名</option>
+			</select>
+		</div>
+	</div>
+
+	<div class="form-group">
+		<label class="col-md-3 control-label">用户姓名</label>
+		<div class="col-md-8">
+			<input name="userName" type="text" placeholder="请输入用户姓名"
+				class="form-control" th:value="${userInfo.userName}"
+				required="required" maxlength="20" />
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-md-3 control-label">证件类型</label>
+		<div class="col-md-8">
+			<select class="form-control " name="userCardType" id="userCardType"
+				onchange="userCardTypeInfo()">
+				<option value="1" th:selected="${userInfo.userCardType==1}">身份证</option>
+				<option value="2" th:selected="${userInfo.userCardType==2}">其他证件</option>
+			</select>
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-md-3 control-label">选择图片</label>
+		<div class="col-md-8">
+			<input class="file" type="file"
+				onchange="checkFileExt('fileUrls',this.value);"
+				placeholder="请选择证件图片" name="fileUrls" id="fileUrls" />
+
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-md-3 control-label">预览图片</label>
+		<div class="col-md-8">
+			<img style="height: 200px; margin: auto;" title="证件照片"
+				class="form-control sample2" id="img1"
+				th:src="${userInfo.userCardUrl}" />
+			<div style="float: right; margin-top: 2px;">
+				<a class="btn btn-default" style="color: #797979;" href=""
+					id="img1new" target="block"> 放大</a>
+				<button id="img2" class="btn btn-default" type="button"
+					name="refresh" aria-label="refresh" title="旋转">旋转</button>
+			</div>
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-md-3 control-label">证件号</label>
+		<div class="col-md-8">
+			<input name="userCardNo" id="userCardNo" type="text"
+				onchange="userCardNoBlur();" placeholder="请输入证件号"
+				class="form-control" th:value="${userInfo.userCardNo}"
+				maxlength="20" required="required" />
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-md-3 control-label">性别</label>
+		<div class="col-md-8">
+			男<input type="radio" name="userSex"
+				th:checked="${userInfo.userSex==1}" th:value="1" required="required" />
+			女<input type="radio" name="userSex"
+				th:checked="${userInfo.userSex==0}" th:value="0" required="required" />
+		</div>
+	</div>
+
+	<div class="form-group">
+		<label class="col-md-3 control-label">用户联系地址</label>
+		<div class="col-md-8">
+			<input name="userAddress" type="text" placeholder="请输入用户联系方式"
+				class="form-control" th:value="${userInfo.userAddress}"
+				required="required" maxlength="30" />
+		</div>
+	</div>
+
+	<div class="form-group">
+		<label class="col-md-3 control-label">用户联系电话</label>
+		<div class="col-md-8">
+			<input name="userPhone" type="text" placeholder="请输入用户联系电话"
+				class="form-control" th:value="${userInfo.userPhone}"
+				required="required" isTelephone="true" maxlength="11" />
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-md-3 control-label">用户生日</label>
+		<div class="col-md-8">
+			<input name="userBirthday" id="datepicker" type="text"
+				readonly="readonly" placeholder="请输入用户生日"
+				class="form-control datepicker"
+				th:if="${userInfo.userBirthday!=null}"
+				th:value="${#dates.format(userInfo.userBirthday,'yyyy-MM-dd')}"
+				required="required" /> <input name="userBirthday" id="datepicker"
+				type="text" placeholder="请输入用户生日" class="form-control datepicker"
+				th:if="${userInfo.userBirthday==null}" required="required" />
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-md-3 control-label">报名类型</label>
+		<div class="col-md-8">
+			<select class="form-control " name="regType" id="regType"
+				disabled="disabled" onchange="getUser();">
+				<option value="1" th:selected="${userInfo.regType==1}">本人报名</option>
+				<option value="2" th:selected="${userInfo.regType==2}">孩子报名</option>
+			</select>
+		</div>
+	</div>
+
+	<div id="child">
+		<div class="form-group">
+			<label class="col-md-3 control-label">孩子姓名</label>
+			<div class="col-md-8">
+				<input name="childrenName" type="text" placeholder="请输入孩子姓名"
+					class="form-control" th:value="${userInfo.childrenName}"
+					required="required" maxlength="20" />
+			</div>
+		</div>
+
+		<div class="form-group">
+			<label class="col-md-3 control-label">与孩子关系类型</label>
+			<div class="col-md-8">
+				<select class="form-control" name="childrenType" id="childrenType"
+					disabled="disabled" required="required">
+					<option value="">选择与孩子关系类型</option>
+					<option value="1" th:selected="${userInfo.childrenType==1}">父母</option>
+					<option value="2" th:selected="${userInfo.childrenType==2}">亲戚</option>
+					<option value="3" th:selected="${userInfo.childrenType==3}">其他</option>
+				</select>
+			</div>
+		</div>
+	</div>
+
+
+</form>
+<script th:src="@{{path}/js/jQueryRotate.js?5=4(path=${contextPath})}"
+	type="text/javascript"></script>
+<script th:src="@{{path}/js/img2blob.js(path=${contextPath})}"
+	type="text/javascript"></script>
+<script th:inline="javascript">
+	//<![CDATA[
+	$().ready(function() {
+		// with watermark
+		$(".sample2").img2blob({
+			watermark : '仅用于乒乓在沃报名，他用无效',
+			fontStyle : 'Microsoft YaHei,Arial',
+			fontSize : '38', // px
+			fontColor : 'blue', // default 'black'
+			fontX : 20, // The x coordinate where to start painting the text
+			fontY : 50
+		// The y coordinate where to start painting the text
+		});
+	})
+	var num = 0;
+	$("#img2").click(function() {
+		num++;
+		$("#img1").rotate(90 * num);
+	});
+
+	function getUser() {
+		var regType = $("#regType").val();
+		if (regType == 1) {
+			$("#child").hide();
+		} else {
+			$("#child").show();
+		}
+	}
+	$("#form").validate({
+		submitHandler : function(form) {
+			parent.BootstrapDialog.dialog.enableButtons(false);
+			$('#form').ajaxSubmit({
+				url : getRootPath_web() + '/userInfoController/edit',
+				success : function(data) {
+					if (data.success) {
+						parent.BootstrapDialog.dialog.close();
+						parent.BootstrapDialog.table.bootstrapTable('refresh');
+						parent.swal('', data.msg, 'success')
+					} else {
+						parent.BootstrapDialog.dialog.enableButtons(true);
+						parent.swal('', data.msg, 'error')
+					}
+				},
+			});
+		}
+	});
+	function checkFileExt(id, filename) {
+		if (!filename) {
+			return;
+		}
+		filename = filename.toUpperCase();
+		var flag = false; //状态
+		var arr = [ "JPG", "PNG", "GIF", "BMP" ];
+		//取出上传文件的扩展名
+		var index = filename.lastIndexOf(".");
+		var ext = filename.substr(index + 1);
+		//循环比较
+
+		for ( var i in arr) {
+			if (ext == arr[i]) {
+				flag = true; //一旦找到合适的，立即退出循环
+				break;
+			}
+		}
+
+		//条件判断
+		if (!flag) {
+			$("#" + id + "").val("");
+			parent.swal('', '证件照片格式不正确', 'error');
+		} else {
+
+		}
+	}
+	$(document).ready(function() {
+		getUser();
+		$('#datepicker').datetimepicker({
+			language : 'zh-CN',
+			format : "yyyy-mm-dd",
+			minView : 2,
+			autoclose : 1,
+			startView : 3,
+		});
+	});
+	function userCardTypeInfo() {
+		$("#userCardNo").val("");
+		$("input[name='userSex']").get(0).checked = false;
+		$("input[name='userSex']").get(1).checked = false;
+		$("#datepicker").val("");
+		$("#file1").val("");
+		getGroup();
+	}
+	function userCardNoBlur() {
+		var idCard = $("#userCardNo").val();
+		var userCardType = $("#userCardType").val();
+		var birthday = "";
+		if (idCard != null && idCard != "") {
+			if (userCardType == 1) {
+
+				if (!(idCard.length == 15 || idCard.length == 18)) {
+					parent.swal('', "请输入正确的证件号码", 'error');
+					getGroup();
+
+				}
+				if (idCard.length == 15) {
+					birthday = "19" + idCard.substr(6, 6);
+					if (idCard.substr(14, 1) % 2 == 1) {
+						$("input[name='userSex']").get(0).checked = true;
+					} else {
+						$("input[name='userSex']").get(1).checked = true;
+					}
+				} else if (idCard.length == 18) {
+					birthday = idCard.substr(6, 8);
+					if (idCard.substr(16, 1) % 2 == 1) {
+						$("input[name='userSex']").get(0).checked = true;
+					} else {
+						$("input[name='userSex']").get(1).checked = true;
+					}
+
+				}
+				birthday = birthday.replace(/(.{4})(.{2})/, "$1-$2-");
+				$("#datepicker").val(birthday);
+				getGroup();
+			}
+		}
+	}
+
+	//]]>
+</script>

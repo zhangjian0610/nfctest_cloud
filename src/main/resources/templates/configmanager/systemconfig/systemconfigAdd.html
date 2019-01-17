@@ -1,0 +1,56 @@
+<form class="form-horizontal" id="form" method="post">
+	<div class="form-group">
+		<label class="col-md-3 control-label">参数标识</label>
+		<div class="col-md-8">
+			<input name="confId" type="text" placeholder="请输入参数标识" class="form-control" value="" autocomplete="off" required="required" />
+		</div>
+	</div>
+
+	<div class="form-group">
+		<label class="col-md-3 control-label">参数名称</label>
+		<div class="col-md-8">
+			<input name="confName" type="text" placeholder="请输入参数名称" class="form-control" value="" required="required" />
+		</div>
+	</div>
+
+	<div class="form-group">
+		<label class="col-md-3 control-label">参数内容</label>
+		<div class="col-md-8">
+			<input name="confContext" type="text" placeholder="请输入参数内容" class="form-control" value="" />
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-md-3 control-label">参数描述</label>
+		<div class="col-md-8">
+			<input type="text" class="form-control" placeholder="请输入参数描述"  value=""  name="confDesc" />
+		</div>
+	</div>
+</form>
+
+<script>
+	   $("#form").validate(
+	    {
+		    submitHandler : function(form)
+		    {
+			    parent.BootstrapDialog.dialog.enableButtons(false);
+			    $('#form').ajaxSubmit(
+			    {
+			        url : getRootPath_web() + '/systemConfigController/add',
+			        success : function(data)
+			        {
+				        if (data.success)
+				        {
+					        parent.BootstrapDialog.dialog.close();
+					        parent.BootstrapDialog.table.bootstrapTable('refresh');
+					        parent.swal('', data.msg, 'success')
+				        }
+				        else
+				        {
+				        	parent.BootstrapDialog.dialog.enableButtons(true);
+					        parent.swal('', data.msg, 'error')
+				        }
+			        },
+			    });
+		    }
+	    });
+</script>

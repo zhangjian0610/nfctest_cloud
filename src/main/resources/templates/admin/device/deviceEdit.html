@@ -1,0 +1,108 @@
+<script th:inline="javascript">
+    //<![CDATA[
+    $('#datepicker').datetimepicker({
+        language: 'zh-CN',
+        format: "yyyy-mm-dd",
+        minView: 2,
+        autoclose: 1,
+        startView: 3,
+    });
+
+    // $("#roleIds").selectpicker({
+    //     noneSelectedText: '请选择所属角色'
+    // });
+    // var ids = [[${user.roleIds}]];
+    // if (ids != null) {
+    //     ids = ids.split(",");
+    //     $("#roleIds").selectpicker("val", ids);
+    // }
+    // $("#roleIds").selectpicker("refresh");
+
+    $("#form").validate({
+        submitHandler: function(form) {
+            parent.BootstrapDialog.dialog.enableButtons(false);
+            $('#form').ajaxSubmit({
+                //todo
+                url: getRootPath_web() + '/deviceController/edit',
+                success: function(data) {
+                    if (data.success) {
+                        parent.BootstrapDialog.dialog.close();
+                        parent.BootstrapDialog.table.bootstrapTable('refresh');
+                        parent.swal('', data.msg, 'success')
+                    } else {
+                        parent.BootstrapDialog.dialog.enableButtons(true);
+                        parent.swal('', data.msg, 'error')
+                    }
+                },
+            });
+        }
+    });
+    //]]>
+</script>
+<form class="form-horizontal" id="form" method="post">
+    <div class="form-group">
+        <label class="col-md-3 control-label">设备ID</label>
+        <div class="col-md-8">
+            <input style="display: none;" name="id" th:value="${device.id}" /> <input name="deviceId" type="text" placeholder="请输入设备ID" class="form-control" th:value="${device.id}" autocomplete="off"
+                                                                                    required="required" maxlength="20" readonly="readonly" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-md-3 control-label">设备信息</label>
+        <div class="col-md-8">
+            <input name="deviceInfo" type="text" placeholder="请输入设备信息"
+                   class="form-control" th:value="${device.info}" />
+        </div>
+    </div>
+    <!-- <div class="form-group">
+        <label class="col-md-3 control-label">邮箱</label>
+        <div class="col-md-8">
+            <input name="email" type="text" placeholder="请输入邮箱"
+                class="form-control" th:value="${user.email}" email="true" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-md-3 control-label">手机号</label>
+        <div class="col-md-8">
+            <input name="phone" type="text" placeholder="请手机号码"
+                class="form-control" th:value="${user.phone}" maxlength="11" />
+        </div>
+    </div> -->
+    <!--<div class="form-group">-->
+        <!--<label class="col-md-3 control-label">密码有效期</label>-->
+        <!--<div class="col-md-8">-->
+            <!--<input id="datepicker" type="text" class="form-control datepicker" th:if="${user.validdatetime!=null}" th:value="${#dates.format(user.validdatetime,'yyyy-MM-dd HH:mm:ss')}" readonly="readonly"-->
+                   <!--name="validdatetime" /> <input id="datepicker" type="text" class="form-control datepicker" th:if="${user.validdatetime==null}" value="" readonly="readonly" name="validdatetime" />-->
+        <!--</div>-->
+    <!--</div>-->
+    <!--<div class="form-group">-->
+        <!--<label class="col-md-3 control-label">所属角色</label>-->
+        <!--<div class="col-md-8">-->
+            <!--<select class="form-control" style="height: 34px" name="roleIds" id="roleIds" multiple="multiple">-->
+                <!--<option th:each="prod : ${roles}" th:value="${prod.id}" th:text="${prod.name}" th:selected="${user.roleIds==prod.id}"></option>-->
+            <!--</select>-->
+        <!--</div>-->
+    <!--</div>-->
+    <!--<div class="form-group">-->
+        <!--<label class="col-md-3 control-label">账号状态</label>-->
+        <!--<div class="col-md-8">-->
+            <!--<select class="form-control" style="height: 34px" name="lockSymbol" id="lockSymbol">-->
+                <!--<option value="0" th:selected="${lockSymbol==0}">未锁定</option>-->
+                <!--<option value="1" th:selected="${lockSymbol==1}">已锁定</option>-->
+
+            <!--</select>-->
+        <!--</div>-->
+    <!--</div>-->
+    <!--<div class="form-group">-->
+        <!--<label class="col-md-3 control-label">管理级别</label>-->
+        <!--<div class="col-md-8">-->
+            <!--<select class="form-control" style="height: 34px" name="levelType" id="levelType">-->
+                <!--<option value="0" th:if="${levelType==0}" th:selected="${levelTypes==0}">超级管理员</option>-->
+                <!--<option value="1" th:if="${levelType==0}" th:selected="${levelTypes==1}">普通管理员</option>-->
+
+            <!--</select>-->
+        <!--</div>-->
+    <!--</div>-->
+
+
+</form>
